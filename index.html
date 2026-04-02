@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>ARMUERIE | GTA RP - Premium Armory</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #eff3f8 100%);
+            color: #1a1a2e;
+            overflow-x: hidden;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes bounceLogo {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-6px); }
+        }
+
+        @keyframes glowPulse {
+            0%, 100% { box-shadow: 0 0 5px rgba(227,27,35,0.3), 0 0 10px rgba(227,27,35,0.2); }
+            50% { box-shadow: 0 0 20px rgba(227,27,35,0.6), 0 0 30px rgba(227,27,35,0.3); }
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -1000px 0; }
+            100% { background-position: 1000px 0; }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #e2e8f0;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #e31b23;
+            border-radius: 10px;
+        }
+
+        /* Header moderne épuré */
+        .header {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(227, 27, 35, 0.15);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }
+
+        /* Logo 2D animé rebondissant */
+        .logo {
+            flex-shrink: 0;
+            animation: bounceLogo 2s ease-in-out infinite;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .logo:hover {
+            animation: none;
+            transform: scale(1.02);
+        }
+        .logo h1 {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #e31b23, #1e3a8a);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: 1px;
+        }
+        .logo p {
+            font-size: 0.7rem;
+            color: #6b7280;
+            letter-spacing: 1px;
+            text-align: center;
+        }
+
+        .search-wrapper {
+            flex: 1;
+            max-width: 380px;
+            position: relative;
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        .search-wrapper input {
+            width: 100%;
+            padding: 12px 20px;
+            background: #f1f5f9;
+            border: 2px solid #e2e8f0;
+            border-radius: 50px;
+            color: #1e293b;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        .search-wrapper input:focus {
+            outline: none;
+            border-color: #e31b23;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(227, 27, 35, 0.1);
+        }
+
+        .search-wrapper i {
+            position: absolute;
+            right: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #e31b23;
+        }
+
+        /* Boutons header */
+        .header-buttons {
+            display: flex;
+            gap: 1rem;
+            animation: fadeInUp 0.5s ease-out 0.1s backwards;
+        }
+
+        .cart-btn {
+            background: linear-gradient(135deg, #1e3a8a, #152e6e);
+            padding: 12px 28px;
+            border-radius: 50px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            font-size: 1rem;
+            transition: all 0.3s;
+            color: white;
+            border: none;
+            box-shadow: 0 4px 12px rgba(30, 58, 138, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cart-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .cart-btn:hover::before {
+            left: 100%;
+        }
+
+        .cart-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(227, 27, 35, 0.4);
+            background: linear-gradient(135deg, #e31b23, #b01018);
+        }
+
+        .cart-count {
+            background: white;
+            color: #e31b23;
+            border-radius: 50%;
+            width: 26px;
+            height: 26px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 0.85rem;
+        }
+
+        .rdv-btn {
+            background: transparent;
+            border: 2px solid #1e3a8a;
+            color: #1e3a8a;
+            padding: 12px 28px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 700;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .rdv-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(30,58,138,0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .rdv-btn:hover::before {
+            left: 100%;
+        }
+
+        .rdv-btn:hover {
+            background: #1e3a8a;
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 14px rgba(30, 58, 138, 0.3);
+        }
+
+        /* Navigation catégories */
+        .nav-categories {
+            margin-top: 1.5rem;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #eef2f8;
+        }
+
+        .cat-btn {
+            background: white;
+            border: 2px solid #e2e8f0;
+            padding: 12px 28px;
+            border-radius: 60px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            color: #334155;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cat-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .cat-btn:hover::before {
+            left: 100%;
+        }
+
+        .cat-btn:hover {
+            background: #e31b23;
+            border-color: #e31b23;
+            color: white;
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(227, 27, 35, 0.3);
+        }
+
+        .cat-btn.active {
+            background: #e31b23;
+            border-color: #e31b23;
+            color: white;
+            box-shadow: 0 6px 14px rgba(227, 27, 35, 0.4);
+        }
+
+        /* Contenu principal */
+        .main-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2.5rem 2rem;
+            min-height: 80vh;
+        }
+
+        /* Hero section */
+        .hero {
+            background: linear-gradient(135deg, #1e3a8a08, #e31b2308);
+            border-radius: 40px;
+            padding: 3.5rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            border: 1px solid rgba(227, 27, 35, 0.2);
+            animation: fadeInUp 0.7s ease-out;
+        }
+
+        .hero h2 {
+            font-size: 3rem;
+            font-family: 'Orbitron', monospace;
+            color: #1e3a8a;
+            margin-bottom: 1rem;
+        }
+
+        .hero p {
+            color: #475569;
+            font-size: 1.1rem;
+        }
+
+        .hero-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        /* Grille produits */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 24px;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            border: 1px solid #eef2f8;
+            cursor: pointer;
+            opacity: 0;
+            animation: fadeInUp 0.6s ease-out forwards;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+        }
+
+        .product-card:nth-child(1) { animation-delay: 0.05s; }
+        .product-card:nth-child(2) { animation-delay: 0.1s; }
+        .product-card:nth-child(3) { animation-delay: 0.15s; }
+        .product-card:nth-child(4) { animation-delay: 0.2s; }
+        .product-card:nth-child(5) { animation-delay: 0.25s; }
+        .product-card:nth-child(6) { animation-delay: 0.3s; }
+
+        .product-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            border-color: #e31b23;
+            box-shadow: 0 25px 40px rgba(227, 27, 35, 0.15);
+        }
+
+        .product-img {
+            width: 100%;
+            height: 180px;
+            background: linear-gradient(145deg, #f8fafc, #f1f5f9);
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3.5rem;
+            color: #1e3a8a;
+            transition: transform 0.3s;
+        }
+
+        .product-card:hover .product-img {
+            transform: scale(1.05);
+        }
+
+        .product-info {
+            padding: 1.2rem;
+        }
+
+        .product-name {
+            font-weight: 800;
+            font-size: 1rem;
+            color: #0f172a;
+        }
+
+        .product-price {
+            color: #e31b23;
+            font-size: 1.4rem;
+            font-weight: 800;
+            margin: 8px 0;
+        }
+
+        .add-to-cart {
+            background: #1e3a8a;
+            border: none;
+            padding: 10px;
+            width: 100%;
+            border-radius: 50px;
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .add-to-cart:hover {
+            background: #e31b23;
+            transform: scale(1.02);
+        }
+
+        /* Modal description */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+            z-index: 1100;
+            justify-content: center;
+            align-items: center;
+            animation: fadeInUp 0.3s ease-out;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 32px;
+            max-width: 450px;
+            width: 90%;
+            padding: 2rem;
+            border-top: 6px solid #e31b23;
+            text-align: center;
+            animation: fadeInUp 0.4s ease-out;
+        }
+
+        .close-modal {
+            float: right;
+            font-size: 24px;
+            cursor: pointer;
+            color: #94a3b8;
+            transition: color 0.2s;
+        }
+
+        .close-modal:hover {
+            color: #e31b23;
+        }
+
+        /* Panier latéral */
+        .cart-sidebar {
+            position: fixed;
+            top: 0;
+            right: -550px;
+            width: 500px;
+            height: 100vh;
+            background: white;
+            border-left: 4px solid #e31b23;
+            z-index: 1200;
+            transition: right 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            display: flex;
+            flex-direction: column;
+            padding: 1.8rem;
+            box-shadow: -10px 0 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .cart-sidebar.open {
+            right: 0;
+        }
+
+        .cart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.4rem;
+            padding-bottom: 1rem;
+            border-bottom: 3px solid #e31b23;
+            color: #1e3a8a;
+            font-weight: 700;
+        }
+
+        .cart-items {
+            flex: 1;
+            overflow-y: auto;
+            margin: 1rem 0;
+        }
+
+        .cart-item {
+            background: #f8fafc;
+            padding: 14px;
+            border-radius: 18px;
+            margin: 10px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            animation: fadeInUp 0.3s ease-out;
+            transition: all 0.2s;
+        }
+
+        .cart-item:hover {
+            transform: translateX(-5px);
+            background: #f1f5f9;
+        }
+
+        .cart-total {
+            font-size: 1.5rem;
+            font-weight: 800;
+            border-top: 2px solid #eef2f8;
+            padding-top: 1rem;
+            color: #e31b23;
+        }
+
+        /* Formulaire RP animé */
+        .rp-form {
+            background: #f8fafc;
+            padding: 1.2rem;
+            border-radius: 24px;
+            margin: 1rem 0;
+            transition: all 0.3s;
+        }
+
+        .rp-form:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .rp-form h3 {
+            color: #1e3a8a;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .rp-form input {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            transition: all 0.3s;
+        }
+
+        .rp-form input:focus {
+            outline: none;
+            border-color: #e31b23;
+            box-shadow: 0 0 0 4px rgba(227, 27, 35, 0.1);
+            transform: translateX(5px);
+        }
+
+        .btn-validate {
+            background: #00c853;
+            padding: 14px;
+            border-radius: 50px;
+            font-weight: 800;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-validate::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-validate:hover::before {
+            left: 100%;
+        }
+
+        .btn-validate:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 12px rgba(0, 200, 83, 0.3);
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 1150;
+        }
+
+        .category-title {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            border-left: 6px solid #e31b23;
+            padding-left: 20px;
+            color: #1e3a8a;
+            font-weight: 800;
+            animation: slideInLeft 0.5s ease-out;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .section-header h2 {
+            font-size: 1.5rem;
+            color: #1e3a8a;
+            font-weight: 800;
+        }
+
+        .browse-btn {
+            background: transparent;
+            border: 2px solid #e31b23;
+            padding: 8px 24px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .browse-btn:hover {
+            background: #e31b23;
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .remove-item {
+            background: #e31b23;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 30px;
+            color: white;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .remove-item:hover {
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 768px) {
+            .cart-sidebar { width: 100%; right: -100%; }
+            .header-top { flex-direction: column; }
+            .header-buttons { width: 100%; justify-content: center; }
+            .hero h2 { font-size: 1.8rem; }
+            .cat-btn { padding: 8px 18px; font-size: 0.7rem; }
+            .logo h1 { font-size: 1.4rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <div class="header-top">
+        <div class="logo">
+            <h1>ARMUERIE</h1>
+            <p>Agence d'Excellence · Los Santos</p>
+        </div>
+        <div class="search-wrapper">
+            <input type="text" id="searchInput" placeholder="Rechercher une arme...">
+            <i class="fas fa-search"></i>
+        </div>
+        <div class="header-buttons">
+            <div class="cart-btn" id="cartIcon">
+                <i class="fas fa-shopping-cart"></i> Panier <span id="cartCount" class="cart-count">0</span>
+            </div>
+            <button class="rdv-btn" id="contactBtn">
+                <i class="fas fa-calendar-alt"></i> RDV & Contact
+            </button>
+        </div>
+    </div>
+    <div class="nav-categories" id="navCategories"></div>
+</div>
+
+<div class="main-content" id="mainContent"></div>
+
+<!-- Modale description -->
+<div id="descModal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal">&times;</span>
+        <h2 id="modalTitle" style="color:#1e3a8a;"></h2>
+        <p id="modalDesc" style="margin:20px 0; color:#475569;"></p>
+        <p style="color:#e31b23; font-size:1.8rem; font-weight:800;" id="modalPrice"></p>
+    </div>
+</div>
+
+<!-- Panier -->
+<div id="cartSidebar" class="cart-sidebar">
+    <div class="cart-header">
+        <span><i class="fas fa-shopping-bag"></i> Mon panier</span>
+        <span style="cursor:pointer; font-size:28px" id="closeCartBtn">&times;</span>
+    </div>
+    <div id="cartItemsList" class="cart-items">Panier vide</div>
+    <div class="cart-total">💰 TOTAL : <span id="cartTotalPrice">0</span> $</div>
+    <div class="rp-form">
+        <h3><i class="fas fa-id-card"></i> Informations client RP</h3>
+        <input type="text" id="rpNom" placeholder="Nom RP *">
+        <input type="text" id="rpPrenom" placeholder="Prénom RP *">
+        <input type="date" id="rpBirth">
+        <input type="tel" id="rpPhone" placeholder="Numéro de téléphone *">
+    </div>
+    <button class="btn-validate" id="validateOrderBtn"><i class="fab fa-discord"></i> Valider la commande</button>
+    <button class="btn-validate" id="closeCartBtn2" style="background:#e2e8f0; color:#1e293b; margin-top:10px;">Fermer</button>
+</div>
+<div id="overlay" class="overlay"></div>
+
+<script>
+    // ---------- ARMES ----------
+    const weaponsDB = {
+        "Armes blanches": [
+            { name: "Couteau à cran d'arrêt", price: 2500, desc: "Dissimulation facile, rapide à dégainer.", img: "" },
+            { name: "Machette", price: 4000, desc: "Lame redoutable pour le corps à corps.", img: "" },
+            { name: "Poing américain", price: 1800, desc: "Coup dévastateur dans la mêlée.", img: "" },
+            { name: "Katana", price: 12000, desc: "Lame légendaire, rapidité et précision.", img: "" }
+        ],
+        "Pistolets et revolvers": [
+            { name: "Pétoire", price: 5000, desc: "Ancienne mais fiable.", img: "" },
+            { name: "Beretta 9mm", price: 8500, desc: "Précision et cadence.", img: "" },
+            { name: "Pistolet Lourd", price: 12500, desc: "Puissance brute.", img: "" },
+            { name: "Desert Eagle", price: 22000, desc: "Le classique .50 AE.", img: "" },
+            { name: "Pistolet Vintage", price: 7500, desc: "Style rétro.", img: "" }
+        ],
+        "Mitraillettes": [
+            { name: "Pistolet mitrailleur", price: 15000, desc: "Rafale compacte.", img: "" },
+            { name: "Mitraillette", price: 18500, desc: "Cadence élevée.", img: "" }
+        ],
+        "Fusils d'assaut": [
+            { name: "Mousquet", price: 9000, desc: "Tir lent mais puissant.", img: "" },
+            { name: "Carabine", price: 21000, desc: "Précision moyenne/longue distance.", img: "" },
+            { name: "Fusil d'assaut Mk II", price: 35000, desc: "Le nec plus ultra.", img: "" }
+        ],
+        "Fusils de chasse": [
+            { name: "Fusil à pompe", price: 18000, desc: "Ravageur à courte portée.", img: "" },
+            { name: "Fusil à double canon", price: 16500, desc: "Deux tirs rapides.", img: "" }
+        ]
+    };
+
+    let cart = [];
+    let currentCategory = null;
+    let searchFilter = "";
+
+    // WEBHOOKS (à modifier)
+    const WEBHOOK_COMMANDES = "https://discord.com/api/webhooks/À_MODIFIER/TOKEN_COMMANDES";
+    const WEBHOOK_RDV = "https://discord.com/api/webhooks/À_MODIFIER/TOKEN_RDV";
+
+    // Rendu
+    function render() {
+        const container = document.getElementById("mainContent");
+        if (!currentCategory || currentCategory === "accueil") {
+            container.innerHTML = `
+                <div class="hero">
+                    <div class="hero-icon"><i class="fas fa-gun"></i></div>
+                    <h2>Armurerie Légale</h2>
+                    <p>Qualité professionnelle · Service RP premium · Livraison discrète</p>
+                </div>
+                <div class="section-header">
+                    <h2><i class="fas fa-fire"></i> Armes populaires</h2>
+                    <button class="browse-btn" id="browseAllBtn">Parcourir tout →</button>
+                </div>
+                <div class="products-grid" id="featuredGrid"></div>
+            `;
+            const allWeapons = Object.values(weaponsDB).flat();
+            const top6 = allWeapons.slice(0, 6);
+            const grid = document.getElementById("featuredGrid");
+            if(grid) {
+                grid.innerHTML = top6.map((w, idx) => `
+                    <div class="product-card" data-name="${w.name}" style="animation-delay: ${0.05 * idx}s">
+                        <div class="product-img"><i class="fas fa-gun"></i></div>
+                        <div class="product-info">
+                            <div class="product-name">${w.name}</div>
+                            <div class="product-price">${w.price.toLocaleString()} $</div>
+                            <button class="add-to-cart" data-name="${w.name}" data-price="${w.price}"><i class="fas fa-plus"></i> Ajouter</button>
+                        </div>
+                    </div>
+                `).join('');
+                attachCartEvents();
+                attachCardClickEvents(allWeapons);
+            }
+            document.getElementById("browseAllBtn")?.addEventListener("click", () => {
+                currentCategory = "Armes blanches";
+                render();
+                highlightCat();
+            });
+            return;
+        }
+        const weapons = weaponsDB[currentCategory] || [];
+        const filtered = weapons.filter(w => w.name.toLowerCase().includes(searchFilter.toLowerCase()));
+        container.innerHTML = `
+            <div class="category-title">🔫 ${currentCategory.toUpperCase()}</div>
+            <div class="products-grid" id="categoryGrid"></div>
+        `;
+        const grid = document.getElementById("categoryGrid");
+        if(filtered.length === 0) { grid.innerHTML = "<p style='text-align:center;'>Aucune arme trouvée.</p>"; return; }
+        grid.innerHTML = filtered.map((w, idx) => `
+            <div class="product-card" data-name="${w.name}" style="animation-delay: ${0.03 * idx}s">
+                <div class="product-img"><i class="fas fa-gun"></i></div>
+                <div class="product-info">
+                    <div class="product-name">${w.name}</div>
+                    <div class="product-price">${w.price.toLocaleString()} $</div>
+                    <button class="add-to-cart" data-name="${w.name}" data-price="${w.price}"><i class="fas fa-plus"></i> Ajouter</button>
+                </div>
+            </div>
+        `).join('');
+        attachCartEvents();
+        attachCardClickEvents(weapons);
+    }
+
+    function attachCartEvents() {
+        document.querySelectorAll(".add-to-cart").forEach(btn => {
+            btn.addEventListener("click", (e) => {
+                e.stopPropagation();
+                addToCart({ name: btn.dataset.name, price: parseInt(btn.dataset.price) });
+            });
+        });
+    }
+
+    function attachCardClickEvents(weaponsArray) {
+        document.querySelectorAll(".product-card").forEach(card => {
+            card.addEventListener("click", (e) => {
+                if(e.target.classList.contains("add-to-cart") || e.target.closest(".add-to-cart")) return;
+                const name = card.dataset.name;
+                const weapon = weaponsArray.find(w => w.name === name);
+                if(weapon) showModal(weapon);
+            });
+        });
+    }
+
+    function showModal(weapon) {
+        document.getElementById("modalTitle").innerText = weapon.name;
+        document.getElementById("modalDesc").innerText = weapon.desc;
+        document.getElementById("modalPrice").innerHTML = `${weapon.price.toLocaleString()} $`;
+        document.getElementById("descModal").style.display = "flex";
+    }
+
+    function addToCart(item) { cart.push(item); updateCartUI(); }
+    function removeFromCart(idx) { cart.splice(idx, 1); updateCartUI(); }
+
+    function updateCartUI() {
+        const cartDiv = document.getElementById("cartItemsList");
+        const countSpan = document.getElementById("cartCount");
+        const totalSpan = document.getElementById("cartTotalPrice");
+        if(!cartDiv) return;
+        if(cart.length === 0) { cartDiv.innerHTML = "<p style='text-align:center;'>Votre panier est vide</p>"; countSpan.innerText = "0"; totalSpan.innerText = "0"; return; }
+        let html = "", total = 0;
+        cart.forEach((item, idx) => { total += item.price; html += `<div class="cart-item"><span><i class="fas fa-gun"></i> ${item.name}</span><span>${item.price.toLocaleString()} $</span><button class="remove-item" data-idx="${idx}">✖</button></div>`; });
+        cartDiv.innerHTML = html;
+        countSpan.innerText = cart.length;
+        totalSpan.innerText = total.toLocaleString();
+        document.querySelectorAll(".remove-item").forEach(btn => { btn.addEventListener("click", (e) => { removeFromCart(parseInt(btn.dataset.idx)); }); });
+    }
+
+    async function sendOrder() {
+        const nom = document.getElementById("rpNom")?.value.trim();
+        const prenom = document.getElementById("rpPrenom")?.value.trim();
+        const birth = document.getElementById("rpBirth")?.value;
+        const phone = document.getElementById("rpPhone")?.value.trim();
+        if(!nom || !prenom || !phone) return alert("Veuillez remplir Nom, Prénom et Téléphone RP");
+        if(cart.length === 0) return alert("Panier vide");
+        const orderLines = cart.map(i => `${i.name} - ${i.price.toLocaleString()} $`);
+        const total = cart.reduce((s,i)=>s+i.price,0);
+        const embed = { title: "🔫 NOUVELLE COMMANDE", color: 0x1e3a8a, fields: [
+            { name: "Client RP", value: `${prenom} ${nom}`, inline: true },
+            { name: "Date naissance", value: birth || "Non renseignée", inline: true },
+            { name: "Téléphone", value: phone, inline: true },
+            { name: "Articles", value: orderLines.join("\n") || "Aucun", inline: false },
+            { name: "Total", value: `${total.toLocaleString()} $`, inline: true }
+        ] };
+        try {
+            await fetch(WEBHOOK_COMMANDES, { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ embeds: [embed], content: "@everyone 🛒 Nouvelle commande !" }) });
+            alert("✅ Commande envoyée au Discord !");
+            cart = []; updateCartUI(); closeCart();
+        } catch(e) { alert("Erreur d'envoi. Vérifie l'URL du webhook."); }
+    }
+
+    async function sendRDV(nom, prenom, phone) {
+        const embed = { title: "📅 DEMANDE DE RENDEZ-VOUS", color: 0xe31b23, fields: [
+            { name: "Nom", value: nom, inline: true }, { name: "Prénom", value: prenom, inline: true }, { name: "Téléphone", value: phone, inline: true }
+        ] };
+        await fetch(WEBHOOK_RDV, { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ embeds: [embed], content: "@here 📅 Nouvelle demande de RDV !" }) }).catch(()=>alert("Erreur webhook"));
+        alert("Demande de RDV envoyée !");
+    }
+
+    function showContactModal() {
+        const modalDiv = document.createElement("div");
+        modalDiv.className = "modal";
+        modalDiv.style.display = "flex";
+        modalDiv.innerHTML = `
+            <div class="modal-content">
+                <span class="close-modal">&times;</span>
+                <h2 style="color:#1e3a8a;"><i class="fas fa-store"></i> Armurerie Légale</h2>
+                <p><strong>🕒 Horaires d'ouverture :</strong><br>Lundi - Vendredi : 21h → 00h<br>Samedi : 21h → 02h<br>Dimanche : Fermé</p>
+                <hr style="margin:1rem 0;">
+                <h3 style="color:#e31b23;">📅 Demande de rendez-vous</h3>
+                <input type="text" id="rdvNomModal" placeholder="Nom RP" style="width:100%; margin:8px 0; padding:12px; border-radius:16px; border:1px solid #e2e8f0; transition: all 0.3s;">
+                <input type="text" id="rdvPrenomModal" placeholder="Prénom RP" style="width:100%; margin:8px 0; padding:12px; border-radius:16px; border:1px solid #e2e8f0; transition: all 0.3s;">
+                <input type="tel" id="rdvPhoneModal" placeholder="Téléphone RP" style="width:100%; margin:8px 0; padding:12px; border-radius:16px; border:1px solid #e2e8f0; transition: all 0.3s;">
+                <button id="sendRdvModalBtn" style="background:#e31b23; padding:14px; border:none; border-radius:50px; margin-top:15px; color:white; font-weight:800; cursor:pointer; transition: all 0.3s;">Envoyer la demande</button>
+            </div>
+        `;
+        document.body.appendChild(modalDiv);
+        
+        const inputs = modalDiv.querySelectorAll('input');
+        inputs.forEach(input => {
+            input.addEventListener('focus', (e) => {
+                e.target.style.transform = 'translateX(5px)';
+                e.target.style.borderColor = '#e31b23';
+                e.target.style.boxShadow = '0 0 0 3px rgba(227,27,35,0.1)';
+            });
+            input.addEventListener('blur', (e) => {
+                e.target.style.transform = 'translateX(0)';
+                e.target.style.borderColor = '#e2e8f0';
+                e.target.style.boxShadow = 'none';
+            });
+        });
+        
+        const sendBtn = modalDiv.querySelector('#sendRdvModalBtn');
+        sendBtn.addEventListener('mouseenter', () => sendBtn.style.transform = 'scale(1.02)');
+        sendBtn.addEventListener('mouseleave', () => sendBtn.style.transform = 'scale(1)');
+        
+        modalDiv.querySelector(".close-modal").onclick = () => modalDiv.remove();
+        modalDiv.querySelector("#sendRdvModalBtn").onclick = async () => {
+            const n = document.getElementById("rdvNomModal").value.trim();
+            const p = document.getElementById("rdvPrenomModal").value.trim();
+            const t = document.getElementById("rdvPhoneModal").value.trim();
+            if(!n || !p || !t) return alert("Veuillez remplir tous les champs");
+            await sendRDV(n, p, t);
+            modalDiv.remove();
+        };
+    }
+
+    function buildNav() {
+        const nav = document.getElementById("navCategories");
+        const cats = ["Accueil", ...Object.keys(weaponsDB)];
+        nav.innerHTML = cats.map(cat => `<button class="cat-btn" data-cat="${cat}">${cat.toUpperCase()}</button>`).join('');
+        document.querySelectorAll(".cat-btn").forEach(btn => {
+            btn.addEventListener("click", () => {
+                const cat = btn.dataset.cat;
+                currentCategory = cat === "Accueil" ? null : cat;
+                searchFilter = "";
+                document.getElementById("searchInput").value = "";
+                render();
+                highlightCat();
+            });
+        });
+    }
+
+    function highlightCat() {
+        document.querySelectorAll(".cat-btn").forEach(btn => {
+            btn.classList.remove("active");
+            let catVal = btn.dataset.cat;
+            if(catVal === "Accueil" && !currentCategory) btn.classList.add("active");
+            else if(currentCategory === catVal) btn.classList.add("active");
+        });
+    }
+
+    function openCart() { 
+        document.getElementById("cartSidebar").classList.add("open"); 
+        document.getElementById("overlay").style.display = "block";
+    }
+    function closeCart() { document.getElementById("cartSidebar").classList.remove("open"); document.getElementById("overlay").style.display = "none"; }
+
+    const formInputs = ['rpNom', 'rpPrenom', 'rpBirth', 'rpPhone'];
+    formInputs.forEach(id => {
+        const input = document.getElementById(id);
+        if(input) {
+            input.addEventListener('focus', (e) => {
+                e.target.style.transform = 'translateX(5px)';
+                e.target.style.borderColor = '#e31b23';
+                e.target.style.boxShadow = '0 0 0 3px rgba(227,27,35,0.1)';
+            });
+            input.addEventListener('blur', (e) => {
+                e.target.style.transform = 'translateX(0)';
+                e.target.style.borderColor = '#e2e8f0';
+                e.target.style.boxShadow = 'none';
+            });
+        }
+    });
+
+    document.getElementById("searchInput")?.addEventListener("input", (e) => { searchFilter = e.target.value; render(); });
+    document.getElementById("cartIcon")?.addEventListener("click", openCart);
+    document.getElementById("closeCartBtn")?.addEventListener("click", closeCart);
+    document.getElementById("closeCartBtn2")?.addEventListener("click", closeCart);
+    document.getElementById("overlay")?.addEventListener("click", closeCart);
+    document.getElementById("validateOrderBtn")?.addEventListener("click", sendOrder);
+    document.getElementById("contactBtn")?.addEventListener("click", showContactModal);
+    document.querySelector(".close-modal")?.addEventListener("click", () => document.getElementById("descModal").style.display = "none");
+    window.onclick = (e) => { if(e.target === document.getElementById("descModal")) document.getElementById("descModal").style.display = "none"; };
+
+    buildNav();
+    currentCategory = null;
+    render();
+</script>
+</body>
+</html>
