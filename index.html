@@ -926,7 +926,7 @@
         const weapons = weaponsDB[currentCategory] || [];
         const filtered = weapons.filter(w => w.name.toLowerCase().includes(searchFilter.toLowerCase()));
         container.innerHTML = `
-            <div class="category-title">🔫 ${currentCategory.toUpperCase()}</div>
+            <div class="category-title"> ${currentCategory.toUpperCase()}</div>
             <div class="products-grid" id="categoryGrid"></div>
         `;
         const grid = document.getElementById("categoryGrid");
