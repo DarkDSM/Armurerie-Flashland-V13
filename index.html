@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Armurerie | GTA RP</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Poppins', system-ui, -apple-system, sans-serif;
+            background: radial-gradient(circle at 20% 30%, #0a0a0a, #030303);
+            color: #eee;
+            min-height: 100vh;
+        }
+
+        /* Header moderne */
+        .header {
+            background: rgba(10, 10, 15, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 215, 0, 0.3);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            letter-spacing: 2px;
+            background: linear-gradient(135deg, #ffd700, #ff8c00);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .logo p {
+            font-size: 0.7rem;
+            color: #aaa;
+        }
+
+        .search-bar {
+            flex: 1;
+            max-width: 400px;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 12px 20px;
+            border-radius: 40px;
+            border: 1px solid #333;
+            background: rgba(0,0,0,0.6);
+            color: white;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .search-bar input:focus {
+            outline: none;
+            border-color: #ffd700;
+            box-shadow: 0 0 10px rgba(255,215,0,0.3);
+        }
+
+        .cart-icon {
+            position: relative;
+            cursor: pointer;
+            background: #1e1e2a;
+            padding: 10px 20px;
+            border-radius: 40px;
+            transition: 0.2s;
+            border: 1px solid #ffd70040;
+        }
+
+        .cart-icon:hover {
+            background: #2a2a35;
+        }
+
+        .cart-count {
+            background: #ff4444;
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: bold;
+            position: absolute;
+            top: -8px;
+            right: -8px;
+        }
+
+        .btn-contact {
+            background: transparent;
+            border: 1px solid #ffd700;
+            color: #ffd700;
+            padding: 8px 18px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-contact:hover {
+            background: #ffd70020;
+        }
+
+        /* Grille produits */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .category {
+            margin-bottom: 3rem;
+        }
+
+        .category h2 {
+            font-size: 1.8rem;
+            border-left: 5px solid #ffd700;
+            padding-left: 15px;
+            margin-bottom: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .product-card {
+            background: rgba(20, 20, 30, 0.7);
+            backdrop-filter: blur(4px);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: 1px solid rgba(255,215,0,0.2);
+            cursor: pointer;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            border-color: #ffd70080;
+        }
+
+        .product-img {
+            width: 100%;
+            height: 200px;
+            background: #111;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            background-size: cover;
+            background-position: center;
+        }
+
+        /* fallback si image manquante */
+        .product-img.no-img {
+            background: linear-gradient(145deg, #1a1a2a, #0f0f1a);
+        }
+
+        .product-info {
+            padding: 1rem;
+        }
+
+        .product-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .product-price {
+            color: #ffd700;
+            font-size: 1.3rem;
+            margin: 8px 0;
+        }
+
+        .add-to-cart {
+            background: #ffd700;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 8px;
+            transition: 0.2s;
+        }
+
+        .add-to-cart:hover {
+            background: #ffaa00;
+            transform: scale(1.02);
+        }
+
+        /* Modal description */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(5px);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: #1e1e2e;
+            max-width: 500px;
+            width: 90%;
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            border: 1px solid gold;
+        }
+
+        .close-modal {
+            float: right;
+            font-size: 28px;
+            cursor: pointer;
+        }
+
+        /* Panier latéral */
+        .cart-sidebar {
+            position: fixed;
+            top: 0;
+            right: -450px;
+            width: 450px;
+            height: 100%;
+            background: #0f0f17;
+            box-shadow: -5px 0 25px rgba(0,0,0,0.5);
+            z-index: 1001;
+            transition: 0.3s;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            border-left: 2px solid #ffd700;
+        }
+
+        .cart-sidebar.open {
+            right: 0;
+        }
+
+        .cart-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 1.5rem;
+            border-bottom: 1px solid #333;
+            padding-bottom: 0.5rem;
+        }
+
+        .cart-items {
+            flex: 1;
+            overflow-y: auto;
+            margin: 1rem 0;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            background: #1a1a24;
+            margin: 8px 0;
+            padding: 8px;
+            border-radius: 12px;
+        }
+
+        .cart-total {
+            font-size: 1.3rem;
+            border-top: 1px solid #333;
+            padding-top: 1rem;
+        }
+
+        .rp-form input {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            background: #2a2a35;
+            border: none;
+            border-radius: 12px;
+            color: white;
+        }
+
+        .btn-validate {
+            background: #00c853;
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 30px;
+            font-weight: bold;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+
+        .btn-close-cart {
+            background: #444;
+            margin-top: 10px;
+        }
+
+        /* overlay */
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+
+        @media (max-width: 700px) {
+            .cart-sidebar { width: 100%; right: -100%; }
+            .header { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <div class="logo">
+        <h1>🔫 ARMUERIE</h1>
+        <p>Black Market RP · Los Santos</p>
+    </div>
+    <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="🔍 Rechercher une arme...">
+    </div>
+    <div class="cart-icon" id="cartIcon">
+        🛒 Panier <span class="cart-count" id="cartCount">0</span>
+    </div>
+    <button class="btn-contact" id="contactBtn">📞 Contact & RDV</button>
+</div>
+
+<div class="container" id="productsContainer"></div>
+
+<!-- Modal description -->
+<div id="descModal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal">&times;</span>
+        <h2 id="modalTitle"></h2>
+        <p id="modalDesc"></p>
+        <p style="color:gold" id="modalPrice"></p>
+    </div>
+</div>
+
+<!-- Panier latéral -->
+<div id="cartSidebar" class="cart-sidebar">
+    <div class="cart-header">
+        <span>🛒 Votre panier RP</span>
+        <span style="cursor:pointer" id="closeCartBtn">✖</span>
+    </div>
+    <div id="cartItemsList" class="cart-items">Panier vide</div>
+    <div class="cart-total">Total: <span id="cartTotalPrice">0</span> $</div>
+    <div class="rp-form">
+        <input type="text" id="rpNom" placeholder="Nom RP">
+        <input type="text" id="rpPrenom" placeholder="Prénom RP">
+        <input type="date" id="rpBirth">
+        <input type="tel" id="rpPhone" placeholder="Numéro de téléphone RP">
+    </div>
+    <button class="btn-validate" id="validateOrderBtn">✅ Valider la commande → Envoyer au bot Discord</button>
+    <button class="btn-validate btn-close-cart" id="closeCartBtn2">Fermer</button>
+</div>
+
+<!-- Overlay -->
+<div id="overlay" class="overlay"></div>
+
+<script>
+    // ======================= BASE DE DONNÉES ARMES =======================
+    const categories = {
+        "Armes blanches": [
+            { name: "Couteau à cran d'arrêt", price: 2500, desc: "Dissimulation facile, rapide à dégainer.", img: "images/couteau.png" },
+            { name: "Machette", price: 4000, desc: "Lame redoutable pour le corps à corps.", img: "images/machette.png" },
+            { name: "Poing américain", price: 1800, desc: "Coup dévastateur dans la mêlée.", img: "images/poing_americain.png" },
+            { name: "Katana", price: 12000, desc: "Lame légendaire, rapidité et précision.", img: "images/katana.png" }
+        ],
+        "Pistolets et revolvers": [
+            { name: "Pétoire", price: 5000, desc: "Ancienne mais fiable.", img: "images/petoire.png" },
+            { name: "Beretta 9mm", price: 8500, desc: "Précision et cadence.", img: "images/beretta.png" },
+            { name: "Pistolet Lourd", price: 12500, desc: "Puissance brute.", img: "images/pistolet_lourd.png" },
+            { name: "Desert Eagle", price: 22000, desc: "Le classique .50 AE.", img: "images/desert_eagle.png" },
+            { name: "Pistolet Vintage", price: 7500, desc: "Style rétro.", img: "images/vintage.png" }
+        ],
+        "Mitraillettes": [
+            { name: "Pistolet mitrailleur", price: 15000, desc: "Rafale compacte.", img: "images/pistolet_mitrailleur.png" },
+            { name: "Mitraillette", price: 18500, desc: "Cadence élevée.", img: "images/mitraillette.png" }
+        ],
+        "Fusils d'assaut": [
+            { name: "Mousquet", price: 9000, desc: "Tir lent mais puissant.", img: "images/mousquet.png" },
+            { name: "Carabine", price: 21000, desc: "Précision moyenne/longue distance.", img: "images/carabine.png" },
+            { name: "Fusil d'assaut Mk II", price: 35000, desc: "Le nec plus ultra.", img: "images/fusil_mk2.png" }
+        ],
+        "Fusils de chasse": [
+            { name: "Fusil à pompe", price: 18000, desc: "Ravageur à courte portée.", img: "images/pompe.png" },
+            { name: "Fusil à double canon", price: 16500, desc: "Deux tirs rapides.", img: "images/double_canon.png" }
+        ]
+    };
+
+    let cart = []; // { name, price, img }
+    let currentDescWeapon = null;
+
+    // Helper render produits
+    function renderProducts(filterText = "") {
+        const container = document.getElementById("productsContainer");
+        container.innerHTML = "";
+        const lowerFilter = filterText.toLowerCase();
+
+        for (let [catName, weapons] of Object.entries(categories)) {
+            const filtered = weapons.filter(w => w.name.toLowerCase().includes(lowerFilter));
+            if (filtered.length === 0 && filterText !== "") continue;
+            const catDiv = document.createElement("div");
+            catDiv.className = "category";
+            catDiv.innerHTML = `<h2>${catName}</h2><div class="products-grid" id="grid-${catName.replace(/\s/g, '')}"></div>`;
+            container.appendChild(catDiv);
+            const grid = catDiv.querySelector(".products-grid");
+            filtered.forEach(weapon => {
+                const card = document.createElement("div");
+                card.className = "product-card";
+                const imgStyle = weapon.img ? `background-image: url('${weapon.img}'); background-size: cover;` : "background: #2a2a35;";
+                card.innerHTML = `
+                    <div class="product-img" style="${imgStyle}">
+                        ${!weapon.img ? "🔫" : ""}
+                    </div>
+                    <div class="product-info">
+                        <div class="product-name">${weapon.name}</div>
+                        <div class="product-price">${weapon.price.toLocaleString()} $</div>
+                        <button class="add-to-cart" data-name="${weapon.name}" data-price="${weapon.price}" data-img="${weapon.img || ''}">+ Ajouter au panier</button>
+                    </div>
+                `;
+                card.addEventListener("click", (e) => {
+                    if (e.target.classList.contains("add-to-cart")) return;
+                    // Afficher modal description
+                    document.getElementById("modalTitle").innerText = weapon.name;
+                    document.getElementById("modalDesc").innerText = weapon.desc;
+                    document.getElementById("modalPrice").innerHTML = `${weapon.price.toLocaleString()} $`;
+                    document.getElementById("descModal").style.display = "flex";
+                });
+                grid.appendChild(card);
+            });
+        }
+
+        // Attacher events add-to-cart
+        document.querySelectorAll(".add-to-cart").forEach(btn => {
+            btn.addEventListener("click", (e) => {
+                e.stopPropagation();
+                const name = btn.getAttribute("data-name");
+                const price = parseInt(btn.getAttribute("data-price"));
+                const img = btn.getAttribute("data-img");
+                addToCart({ name, price, img });
+            });
+        });
+    }
+
+    function addToCart(item) {
+        cart.push(item);
+        updateCartUI();
+    }
+
+    function removeFromCart(index) {
+        cart.splice(index, 1);
+        updateCartUI();
+    }
+
+    function updateCartUI() {
+        const cartItemsDiv = document.getElementById("cartItemsList");
+        const cartCountSpan = document.getElementById("cartCount");
+        const totalSpan = document.getElementById("cartTotalPrice");
+        if (cart.length === 0) {
+            cartItemsDiv.innerHTML = "Panier vide";
+            cartCountSpan.innerText = "0";
+            totalSpan.innerText = "0";
+            return;
+        }
+        let html = "";
+        let total = 0;
+        cart.forEach((item, idx) => {
+            total += item.price;
+            html += `<div class="cart-item">
+                        <span>${item.name}</span>
+                        <span>${item.price.toLocaleString()} $</span>
+                        <button class="remove-item" data-idx="${idx}">❌</button>
+                    </div>`;
+        });
+        cartItemsDiv.innerHTML = html;
+        cartCountSpan.innerText = cart.length;
+        totalSpan.innerText = total.toLocaleString();
+
+        document.querySelectorAll(".remove-item").forEach(btn => {
+            btn.addEventListener("click", (e) => {
+                const idx = parseInt(btn.getAttribute("data-idx"));
+                removeFromCart(idx);
+            });
+        });
+    }
+
+    // Envoi commande vers Discord (via webhook ou bot)
+    async function sendOrderToDiscord(clientInfo, orderSummary, total) {
+        const webhookURL = "https://discord.com/api/webhooks/À_MODIFIER/TOKEN_DU_WEBHOOK"; // on va modifier plus tard
+        const embed = {
+            title: "🔫 NOUVELLE COMMANDE ARMUERIE",
+            color: 0xffd700,
+            fields: [
+                { name: "👤 Client RP", value: `${clientInfo.prenom} ${clientInfo.nom}`, inline: true },
+                { name: "📅 Date naissance", value: clientInfo.birth || "Non renseignée", inline: true },
+                { name: "📞 Téléphone", value: clientInfo.phone, inline: true },
+                { name: "📦 Articles", value: orderSummary.length > 0 ? orderSummary.join("\n") : "Aucun", inline: false },
+                { name: "💰 Total", value: `${total.toLocaleString()} $`, inline: true }
+            ],
+            footer: { text: "Armurerie RP · Commande à traiter" },
+            timestamp: new Date().toISOString()
+        };
+        try {
+            const response = await fetch(webhookURL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ embeds: [embed], content: "@everyone Nouvelle commande !" })
+            });
+            if (response.ok) alert("✅ Commande envoyée au bot Discord !");
+            else alert("❌ Erreur envoi Discord. Vérifie le webhook.");
+        } catch (err) {
+            alert("Erreur réseau: " + err.message);
+        }
+    }
+
+    // validation panier
+    document.getElementById("validateOrderBtn")?.addEventListener("click", () => {
+        const nom = document.getElementById("rpNom").value.trim();
+        const prenom = document.getElementById("rpPrenom").value.trim();
+        const birth = document.getElementById("rpBirth").value;
+        const phone = document.getElementById("rpPhone").value.trim();
+        if (!nom || !prenom || !phone) {
+            alert("Veuillez remplir Nom, Prénom et Téléphone RP !");
+            return;
+        }
+        if (cart.length === 0) {
+            alert("Panier vide. Ajoute des armes.");
+            return;
+        }
+        const orderLines = cart.map(i => `${i.name} - ${i.price.toLocaleString()} $`);
+        const totalCart = cart.reduce((sum, i) => sum + i.price, 0);
+        sendOrderToDiscord({ nom, prenom, birth, phone }, orderLines, totalCart);
+    });
+
+    // RDV Discord
+    async function sendRDVtoDiscord(rdvData) {
+        const webhookRDV = "https://discord.com/api/webhooks/À_MODIFIER_RDV/TOKEN_RDV"; // à changer
+        const embed = {
+            title: "📅 DEMANDE DE RENDEZ-VOUS ARMUERIE",
+            color: 0x00aaff,
+            fields: [
+                { name: "Nom", value: rdvData.nom, inline: true },
+                { name: "Prénom", value: rdvData.prenom, inline: true },
+                { name: "Téléphone", value: rdvData.phone, inline: true }
+            ],
+            footer: { text: "Contacter le client pour confirmer RDV" }
+        };
+        await fetch(webhookRDV, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ embeds: [embed], content: "@here Nouveau rendez-vous !" })
+        }).catch(e => console.error);
+        alert("Demande de RDV envoyée !");
+    }
+
+    // interface contact & rdv
+    function showContactModal() {
+        const modal = document.createElement("div");
+        modal.className = "modal";
+        modal.style.display = "flex";
+        modal.innerHTML = `
+            <div class="modal-content" style="max-width:400px;">
+                <span class="close-modal" style="float:right; cursor:pointer;">&times;</span>
+                <h2>📞 Contact Armurerie</h2>
+                <p><strong>🕒 Horaires RP :</strong><br>
+                Lundi - Vendredi : 21h00 → 00h00<br>
+                Samedi : 21h00 → 02h00<br>
+                Dimanche : Fermé</p>
+                <hr>
+                <h3>📅 Demande de RDV</h3>
+                <input type="text" id="rdvNom" placeholder="Nom RP"><br>
+                <input type="text" id="rdvPrenom" placeholder="Prénom RP"><br>
+                <input type="tel" id="rdvPhone" placeholder="Téléphone"><br>
+                <button id="sendRdvBtn" style="margin-top:12px; background:gold; border:none; padding:8px;">Envoyer RDV → Discord</button>
+            </div>
+        `;
+        document.body.appendChild(modal);
+        modal.querySelector(".close-modal").onclick = () => modal.remove();
+        modal.querySelector("#sendRdvBtn").onclick = async () => {
+            const nom = document.getElementById("rdvNom").value;
+            const prenom = document.getElementById("rdvPrenom").value;
+            const phone = document.getElementById("rdvPhone").value;
+            if (!nom || !prenom || !phone) return alert("Remplis tous les champs");
+            await sendRDVtoDiscord({ nom, prenom, phone });
+            modal.remove();
+        };
+    }
+
+    // Evenements UI
+    document.getElementById("contactBtn")?.addEventListener("click", showContactModal);
+    document.getElementById("cartIcon")?.addEventListener("click", () => {
+        document.getElementById("cartSidebar").classList.add("open");
+        document.getElementById("overlay").style.display = "block";
+    });
+    function closeCart() {
+        document.getElementById("cartSidebar").classList.remove("open");
+        document.getElementById("overlay").style.display = "none";
+    }
+    document.getElementById("closeCartBtn")?.addEventListener("click", closeCart);
+    document.getElementById("closeCartBtn2")?.addEventListener("click", closeCart);
+    document.getElementById("overlay")?.addEventListener("click", closeCart);
+
+    document.querySelector(".close-modal")?.addEventListener("click", () => {
+        document.getElementById("descModal").style.display = "none";
+    });
+    window.onclick = function(e) { if(e.target === document.getElementById("descModal")) document.getElementById("descModal").style.display = "none"; }
+
+    document.getElementById("searchInput")?.addEventListener("input", (e) => renderProducts(e.target.value));
+
+    renderProducts();
+</script>
+</body>
+</html>
