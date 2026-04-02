@@ -391,19 +391,45 @@
         .product-img {
             width: 100%;
             height: 180px;
-            background: linear-gradient(145deg, #f8fafc, #f1f5f9);
             background-size: cover;
             background-position: center;
+            background-repeat: no-repeat;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 3.5rem;
             color: #1e3a8a;
             transition: transform 0.3s;
+            position: relative;
+        }
+        
+        .product-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            padding: 10px;
+        }
+        
+        .product-img i {
+            display: none;
+        }
+        
+        .product-img.has-image i {
+            display: none;
+        }
+        
+        .product-img.no-image {
+            background: linear-gradient(145deg, #f8fafc, #f1f5f9);
+        }
+        
+        .product-img.no-image i {
+            display: flex;
+            font-size: 3.5rem;
+            color: #1e3a8a;
         }
 
         .product-card:hover .product-img {
-            transform: scale(1.05);
+            transform: scale(1.02);
         }
 
         .product-info {
@@ -748,33 +774,53 @@
 <div id="overlay" class="overlay"></div>
 
 <script>
+    // Mapping des noms d'armes vers les fichiers d'images
+    const imageMapping = {
+        "Couteau à cran d'arrêt": "images/cac-cran-arret.png",
+        "Machette": "images/cac-machette.png",
+        "Poing américain": "images/cac-poing-americain.png",
+        "Katana": "images/cac-katana.png",
+        "Pétoire": "images/pi-petoire.png",
+        "Beretta 9mm": "images/pi-beretta.png",
+        "Pistolet Lourd": "images/pi-pistolet-lourd.png",
+        "Desert Eagle": "images/pi-deagle.png",
+        "Pistolet Vintage": "images/pi-pistolet-vintage.png",
+        "Pistolet mitrailleur": "images/sb-pistolet-mitrailleur.png",
+        "Mitraillette": "images/sb-mitraillette.png",
+        "Mousquet": "images/ar-mousquet.png",
+        "Carabine": "images/ar-carabine.png",
+        "Fusil d'assaut Mk II": "images/ar-fusil-assaut-mk2.png",
+        "Fusil à pompe": "images/sg-fusil-pompe.png",
+        "Fusil à double canon": "images/sg-fusil-double-canon.png"
+    };
+
     // ---------- ARMES ----------
     const weaponsDB = {
         "Armes blanches": [
-            { name: "Couteau à cran d'arrêt", price: 2500, desc: "Dissimulation facile, rapide à dégainer.", img: "images/cac-cran-arret.png" },
-            { name: "Machette", price: 4000, desc: "Lame redoutable pour le corps à corps.", img: "" },
-            { name: "Poing américain", price: 1800, desc: "Coup dévastateur dans la mêlée.", img: "" },
-            { name: "Katana", price: 12000, desc: "Lame légendaire, rapidité et précision.", img: "" }
+            { name: "Couteau à cran d'arrêt", price: 2500, desc: "Dissimulation facile, rapide à dégainer.", img: imageMapping["Couteau à cran d'arrêt"] },
+            { name: "Machette", price: 4000, desc: "Lame redoutable pour le corps à corps.", img: imageMapping["Machette"] },
+            { name: "Poing américain", price: 1800, desc: "Coup dévastateur dans la mêlée.", img: imageMapping["Poing américain"] },
+            { name: "Katana", price: 12000, desc: "Lame légendaire, rapidité et précision.", img: imageMapping["Katana"] }
         ],
         "Pistolets et revolvers": [
-            { name: "Pétoire", price: 5000, desc: "Ancienne mais fiable.", img: "" },
-            { name: "Beretta 9mm", price: 8500, desc: "Précision et cadence.", img: "" },
-            { name: "Pistolet Lourd", price: 12500, desc: "Puissance brute.", img: "" },
-            { name: "Desert Eagle", price: 22000, desc: "Le classique .50 AE.", img: "" },
-            { name: "Pistolet Vintage", price: 7500, desc: "Style rétro.", img: "" }
+            { name: "Pétoire", price: 5000, desc: "Ancienne mais fiable.", img: imageMapping["Pétoire"] },
+            { name: "Beretta 9mm", price: 8500, desc: "Précision et cadence.", img: imageMapping["Beretta 9mm"] },
+            { name: "Pistolet Lourd", price: 12500, desc: "Puissance brute.", img: imageMapping["Pistolet Lourd"] },
+            { name: "Desert Eagle", price: 22000, desc: "Le classique .50 AE.", img: imageMapping["Desert Eagle"] },
+            { name: "Pistolet Vintage", price: 7500, desc: "Style rétro.", img: imageMapping["Pistolet Vintage"] }
         ],
         "Mitraillettes": [
-            { name: "Pistolet mitrailleur", price: 15000, desc: "Rafale compacte.", img: "" },
-            { name: "Mitraillette", price: 18500, desc: "Cadence élevée.", img: "" }
+            { name: "Pistolet mitrailleur", price: 15000, desc: "Rafale compacte.", img: imageMapping["Pistolet mitrailleur"] },
+            { name: "Mitraillette", price: 18500, desc: "Cadence élevée.", img: imageMapping["Mitraillette"] }
         ],
         "Fusils d'assaut": [
-            { name: "Mousquet", price: 9000, desc: "Tir lent mais puissant.", img: "" },
-            { name: "Carabine", price: 21000, desc: "Précision moyenne/longue distance.", img: "" },
-            { name: "Fusil d'assaut Mk II", price: 35000, desc: "Le nec plus ultra.", img: "" }
+            { name: "Mousquet", price: 9000, desc: "Tir lent mais puissant.", img: imageMapping["Mousquet"] },
+            { name: "Carabine", price: 21000, desc: "Précision moyenne/longue distance.", img: imageMapping["Carabine"] },
+            { name: "Fusil d'assaut Mk II", price: 35000, desc: "Le nec plus ultra.", img: imageMapping["Fusil d'assaut Mk II"] }
         ],
         "Fusils de chasse": [
-            { name: "Fusil à pompe", price: 18000, desc: "Ravageur à courte portée.", img: "" },
-            { name: "Fusil à double canon", price: 16500, desc: "Deux tirs rapides.", img: "" }
+            { name: "Fusil à pompe", price: 18000, desc: "Ravageur à courte portée.", img: imageMapping["Fusil à pompe"] },
+            { name: "Fusil à double canon", price: 16500, desc: "Deux tirs rapides.", img: imageMapping["Fusil à double canon"] }
         ]
     };
 
@@ -785,6 +831,15 @@
     // WEBHOOKS (à modifier)
     const WEBHOOK_COMMANDES = "https://discord.com/api/webhooks/À_MODIFIER/TOKEN_COMMANDES";
     const WEBHOOK_RDV = "https://discord.com/api/webhooks/À_MODIFIER/TOKEN_RDV";
+
+    // Fonction pour générer l'HTML d'image d'un produit
+    function getProductImageHTML(weapon) {
+        if (weapon.img && weapon.img !== "") {
+            return `<img src="${weapon.img}" alt="${weapon.name}" onerror="this.parentElement.classList.add('no-image'); this.style.display='none'; this.parentElement.innerHTML='<i class=\'fas fa-gun\'></i>'">`;
+        } else {
+            return `<i class="fas fa-gun"></i>`;
+        }
+    }
 
     // Rendu
     function render() {
@@ -808,7 +863,9 @@
             if(grid) {
                 grid.innerHTML = top6.map((w, idx) => `
                     <div class="product-card" data-name="${w.name}" style="animation-delay: ${0.05 * idx}s">
-                        <div class="product-img"><i class="fas fa-gun"></i></div>
+                        <div class="product-img ${w.img ? '' : 'no-image'}">
+                            ${getProductImageHTML(w)}
+                        </div>
                         <div class="product-info">
                             <div class="product-name">${w.name}</div>
                             <div class="product-price">${w.price.toLocaleString()} $</div>
@@ -836,7 +893,9 @@
         if(filtered.length === 0) { grid.innerHTML = "<p style='text-align:center;'>Aucune arme trouvée.</p>"; return; }
         grid.innerHTML = filtered.map((w, idx) => `
             <div class="product-card" data-name="${w.name}" style="animation-delay: ${0.03 * idx}s">
-                <div class="product-img"><i class="fas fa-gun"></i></div>
+                <div class="product-img ${w.img ? '' : 'no-image'}">
+                    ${getProductImageHTML(w)}
+                </div>
                 <div class="product-info">
                     <div class="product-name">${w.name}</div>
                     <div class="product-price">${w.price.toLocaleString()} $</div>
