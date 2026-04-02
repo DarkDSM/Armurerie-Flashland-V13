@@ -45,11 +45,6 @@
             }
         }
 
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-
         @keyframes float {
             0%, 100% { transform: translateY(0px); }
             50% { transform: translateY(-10px); }
@@ -60,19 +55,9 @@
             50% { transform: translateY(-6px); }
         }
 
-        @keyframes glowPulse {
-            0%, 100% { box-shadow: 0 0 5px rgba(227,27,35,0.3), 0 0 10px rgba(227,27,35,0.2); }
-            50% { box-shadow: 0 0 20px rgba(227,27,35,0.6), 0 0 30px rgba(227,27,35,0.3); }
-        }
-
-        @keyframes shimmer {
-            0% { background-position: -1000px 0; }
-            100% { background-position: 1000px 0; }
-        }
-
         /* Scrollbar */
         ::-webkit-scrollbar {
-            width: 6px;
+            width: 8px;
         }
         ::-webkit-scrollbar-track {
             background: #e2e8f0;
@@ -87,7 +72,7 @@
         .header {
             background: rgba(255, 255, 255, 0.98);
             backdrop-filter: blur(10px);
-            padding: 1rem 2rem;
+            padding: 1.5rem 2rem;
             position: sticky;
             top: 0;
             z-index: 1000;
@@ -103,7 +88,6 @@
             gap: 1.5rem;
         }
 
-        /* Logo 2D animé rebondissant */
         .logo {
             flex-shrink: 0;
             animation: bounceLogo 2s ease-in-out infinite;
@@ -116,7 +100,7 @@
         }
         .logo h1 {
             font-family: 'Orbitron', monospace;
-            font-size: 1.8rem;
+            font-size: 2rem;
             font-weight: 800;
             background: linear-gradient(135deg, #e31b23, #1e3a8a);
             -webkit-background-clip: text;
@@ -125,7 +109,7 @@
             letter-spacing: 1px;
         }
         .logo p {
-            font-size: 0.7rem;
+            font-size: 0.75rem;
             color: #6b7280;
             letter-spacing: 1px;
             text-align: center;
@@ -133,19 +117,19 @@
 
         .search-wrapper {
             flex: 1;
-            max-width: 380px;
+            max-width: 450px;
             position: relative;
             animation: fadeInUp 0.5s ease-out;
         }
 
         .search-wrapper input {
             width: 100%;
-            padding: 12px 20px;
+            padding: 14px 22px;
             background: #f1f5f9;
             border: 2px solid #e2e8f0;
             border-radius: 50px;
             color: #1e293b;
-            font-size: 0.9rem;
+            font-size: 1rem;
             transition: all 0.3s;
         }
 
@@ -158,29 +142,29 @@
 
         .search-wrapper i {
             position: absolute;
-            right: 18px;
+            right: 20px;
             top: 50%;
             transform: translateY(-50%);
             color: #e31b23;
+            font-size: 1.2rem;
         }
 
-        /* Boutons header */
         .header-buttons {
             display: flex;
-            gap: 1rem;
+            gap: 1.2rem;
             animation: fadeInUp 0.5s ease-out 0.1s backwards;
         }
 
         .cart-btn {
             background: linear-gradient(135deg, #1e3a8a, #152e6e);
-            padding: 12px 28px;
+            padding: 14px 32px;
             border-radius: 50px;
             cursor: pointer;
             display: flex;
             align-items: center;
             gap: 12px;
             font-weight: 700;
-            font-size: 1rem;
+            font-size: 1.1rem;
             transition: all 0.3s;
             color: white;
             border: none;
@@ -214,25 +198,25 @@
             background: white;
             color: #e31b23;
             border-radius: 50%;
-            width: 26px;
-            height: 26px;
+            width: 28px;
+            height: 28px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             font-weight: 800;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
         }
 
         .rdv-btn {
             background: transparent;
             border: 2px solid #1e3a8a;
             color: #1e3a8a;
-            padding: 12px 28px;
+            padding: 14px 32px;
             border-radius: 50px;
             cursor: pointer;
             transition: all 0.3s;
             font-weight: 700;
-            font-size: 1rem;
+            font-size: 1.1rem;
             display: flex;
             align-items: center;
             gap: 10px;
@@ -390,15 +374,13 @@
 
         .product-img {
             width: 100%;
-            height: 180px;
+            height: 200px;
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 3.5rem;
-            color: #1e3a8a;
             transition: transform 0.3s;
             position: relative;
         }
@@ -407,15 +389,7 @@
             width: 100%;
             height: 100%;
             object-fit: contain;
-            padding: 10px;
-        }
-        
-        .product-img i {
-            display: none;
-        }
-        
-        .product-img.has-image i {
-            display: none;
+            padding: 15px;
         }
         
         .product-img.no-image {
@@ -424,7 +398,7 @@
         
         .product-img.no-image i {
             display: flex;
-            font-size: 3.5rem;
+            font-size: 4rem;
             color: #1e3a8a;
         }
 
@@ -490,9 +464,9 @@
         .modal-content {
             background: white;
             border-radius: 32px;
-            max-width: 450px;
+            max-width: 500px;
             width: 90%;
-            padding: 2rem;
+            padding: 2.5rem;
             border-top: 6px solid #e31b23;
             text-align: center;
             animation: fadeInUp 0.4s ease-out;
@@ -500,7 +474,7 @@
 
         .close-modal {
             float: right;
-            font-size: 24px;
+            font-size: 28px;
             cursor: pointer;
             color: #94a3b8;
             transition: color 0.2s;
@@ -510,20 +484,20 @@
             color: #e31b23;
         }
 
-        /* Panier latéral */
+        /* Panier latéral - PLUS GRAND */
         .cart-sidebar {
             position: fixed;
             top: 0;
-            right: -550px;
-            width: 500px;
+            right: -650px;
+            width: 600px;
             height: 100vh;
             background: white;
-            border-left: 4px solid #e31b23;
+            border-left: 5px solid #e31b23;
             z-index: 1200;
             transition: right 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
             display: flex;
             flex-direction: column;
-            padding: 1.8rem;
+            padding: 2rem;
             box-shadow: -10px 0 40px rgba(0, 0, 0, 0.15);
         }
 
@@ -535,29 +509,31 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 1.4rem;
-            padding-bottom: 1rem;
+            font-size: 1.8rem;
+            padding-bottom: 1.5rem;
             border-bottom: 3px solid #e31b23;
             color: #1e3a8a;
-            font-weight: 700;
+            font-weight: 800;
         }
 
         .cart-items {
             flex: 1;
             overflow-y: auto;
-            margin: 1rem 0;
+            margin: 1.5rem 0;
+            max-height: 40vh;
         }
 
         .cart-item {
             background: #f8fafc;
-            padding: 14px;
+            padding: 18px;
             border-radius: 18px;
-            margin: 10px 0;
+            margin: 12px 0;
             display: flex;
             justify-content: space-between;
             align-items: center;
             animation: fadeInUp 0.3s ease-out;
             transition: all 0.2s;
+            font-size: 1rem;
         }
 
         .cart-item:hover {
@@ -566,19 +542,20 @@
         }
 
         .cart-total {
-            font-size: 1.5rem;
+            font-size: 1.8rem;
             font-weight: 800;
             border-top: 2px solid #eef2f8;
-            padding-top: 1rem;
+            padding-top: 1.5rem;
+            margin-top: 1rem;
             color: #e31b23;
         }
 
-        /* Formulaire RP animé */
+        /* Formulaire RP - PLUS GRAND */
         .rp-form {
             background: #f8fafc;
-            padding: 1.2rem;
-            border-radius: 24px;
-            margin: 1rem 0;
+            padding: 1.8rem;
+            border-radius: 28px;
+            margin: 1.5rem 0;
             transition: all 0.3s;
         }
 
@@ -588,18 +565,20 @@
 
         .rp-form h3 {
             color: #1e3a8a;
-            margin-bottom: 1rem;
-            font-size: 0.9rem;
+            margin-bottom: 1.2rem;
+            font-size: 1.2rem;
+            font-weight: 700;
         }
 
         .rp-form input {
             width: 100%;
-            padding: 12px;
-            margin: 8px 0;
+            padding: 14px 16px;
+            margin: 10px 0;
             background: white;
             border: 1px solid #e2e8f0;
-            border-radius: 16px;
+            border-radius: 20px;
             transition: all 0.3s;
+            font-size: 1rem;
         }
 
         .rp-form input:focus {
@@ -611,15 +590,16 @@
 
         .btn-validate {
             background: #00c853;
-            padding: 14px;
+            padding: 16px;
             border-radius: 50px;
             font-weight: 800;
             border: none;
             cursor: pointer;
-            font-size: 1rem;
+            font-size: 1.1rem;
             transition: all 0.3s;
             position: relative;
             overflow: hidden;
+            margin-top: 10px;
         }
 
         .btn-validate::before {
@@ -695,16 +675,28 @@
         .remove-item {
             background: #e31b23;
             border: none;
-            padding: 6px 14px;
+            padding: 8px 18px;
             border-radius: 30px;
             color: white;
             cursor: pointer;
             font-weight: 600;
             transition: all 0.2s;
+            font-size: 0.9rem;
         }
 
         .remove-item:hover {
             transform: scale(1.05);
+        }
+
+        /* Search results info */
+        .search-info {
+            background: #f1f5f9;
+            padding: 12px 20px;
+            border-radius: 50px;
+            margin-bottom: 2rem;
+            display: inline-block;
+            color: #1e3a8a;
+            font-weight: 500;
         }
 
         @media (max-width: 768px) {
@@ -726,7 +718,7 @@
             <p>Agence d'Excellence · Los Santos</p>
         </div>
         <div class="search-wrapper">
-            <input type="text" id="searchInput" placeholder="Rechercher une arme...">
+            <input type="text" id="searchInput" placeholder="Rechercher une arme dans toutes les catégories...">
             <i class="fas fa-search"></i>
         </div>
         <div class="header-buttons">
@@ -753,11 +745,11 @@
     </div>
 </div>
 
-<!-- Panier -->
+<!-- Panier - PLUS GRAND -->
 <div id="cartSidebar" class="cart-sidebar">
     <div class="cart-header">
         <span><i class="fas fa-shopping-bag"></i> Mon panier</span>
-        <span style="cursor:pointer; font-size:28px" id="closeCartBtn">&times;</span>
+        <span style="cursor:pointer; font-size:32px" id="closeCartBtn">&times;</span>
     </div>
     <div id="cartItemsList" class="cart-items">Panier vide</div>
     <div class="cart-total">💰 TOTAL : <span id="cartTotalPrice">0</span> $</div>
@@ -832,6 +824,15 @@
     const WEBHOOK_COMMANDES = "https://discord.com/api/webhooks/À_MODIFIER/TOKEN_COMMANDES";
     const WEBHOOK_RDV = "https://discord.com/api/webhooks/À_MODIFIER/TOKEN_RDV";
 
+    // Fonction pour récupérer toutes les armes de toutes les catégories
+    function getAllWeapons() {
+        let allWeapons = [];
+        for (let category in weaponsDB) {
+            allWeapons = allWeapons.concat(weaponsDB[category]);
+        }
+        return allWeapons;
+    }
+
     // Fonction pour générer l'HTML d'image d'un produit
     function getProductImageHTML(weapon) {
         if (weapon.img && weapon.img !== "") {
@@ -841,9 +842,44 @@
         }
     }
 
-    // Rendu
+    // Rendu avec recherche globale
     function render() {
         const container = document.getElementById("mainContent");
+        
+        // Si une recherche est active, on affiche les résultats de toutes les catégories
+        if (searchFilter !== "") {
+            const allWeapons = getAllWeapons();
+            const filtered = allWeapons.filter(w => w.name.toLowerCase().includes(searchFilter.toLowerCase()));
+            
+            container.innerHTML = `
+                <div class="search-info">
+                    <i class="fas fa-search"></i> Résultats pour "${searchFilter}" : ${filtered.length} arme(s) trouvée(s)
+                </div>
+                <div class="products-grid" id="searchGrid"></div>
+            `;
+            const grid = document.getElementById("searchGrid");
+            if(filtered.length === 0) { 
+                grid.innerHTML = "<p style='text-align:center; font-size:1.2rem;'>Aucune arme ne correspond à votre recherche.</p>"; 
+                return; 
+            }
+            grid.innerHTML = filtered.map((w, idx) => `
+                <div class="product-card" data-name="${w.name}" style="animation-delay: ${0.03 * idx}s">
+                    <div class="product-img ${w.img ? '' : 'no-image'}">
+                        ${getProductImageHTML(w)}
+                    </div>
+                    <div class="product-info">
+                        <div class="product-name">${w.name}</div>
+                        <div class="product-price">${w.price.toLocaleString()} $</div>
+                        <button class="add-to-cart" data-name="${w.name}" data-price="${w.price}"><i class="fas fa-plus"></i> Ajouter</button>
+                    </div>
+                </div>
+            `).join('');
+            attachCartEvents();
+            attachCardClickEvents(filtered);
+            return;
+        }
+        
+        // Pas de recherche active, affichage normal
         if (!currentCategory || currentCategory === "accueil") {
             container.innerHTML = `
                 <div class="hero">
@@ -857,7 +893,7 @@
                 </div>
                 <div class="products-grid" id="featuredGrid"></div>
             `;
-            const allWeapons = Object.values(weaponsDB).flat();
+            const allWeapons = getAllWeapons();
             const top6 = allWeapons.slice(0, 6);
             const grid = document.getElementById("featuredGrid");
             if(grid) {
@@ -878,11 +914,15 @@
             }
             document.getElementById("browseAllBtn")?.addEventListener("click", () => {
                 currentCategory = "Armes blanches";
+                searchFilter = "";
+                document.getElementById("searchInput").value = "";
                 render();
                 highlightCat();
             });
             return;
         }
+        
+        // Affichage par catégorie
         const weapons = weaponsDB[currentCategory] || [];
         const filtered = weapons.filter(w => w.name.toLowerCase().includes(searchFilter.toLowerCase()));
         container.innerHTML = `
@@ -942,9 +982,9 @@
         const countSpan = document.getElementById("cartCount");
         const totalSpan = document.getElementById("cartTotalPrice");
         if(!cartDiv) return;
-        if(cart.length === 0) { cartDiv.innerHTML = "<p style='text-align:center;'>Votre panier est vide</p>"; countSpan.innerText = "0"; totalSpan.innerText = "0"; return; }
+        if(cart.length === 0) { cartDiv.innerHTML = "<p style='text-align:center; font-size:1.1rem;'>Votre panier est vide</p>"; countSpan.innerText = "0"; totalSpan.innerText = "0"; return; }
         let html = "", total = 0;
-        cart.forEach((item, idx) => { total += item.price; html += `<div class="cart-item"><span><i class="fas fa-gun"></i> ${item.name}</span><span>${item.price.toLocaleString()} $</span><button class="remove-item" data-idx="${idx}">✖</button></div>`; });
+        cart.forEach((item, idx) => { total += item.price; html += `<div class="cart-item"><span><i class="fas fa-gun"></i> ${item.name}</span><span style="font-weight:700;">${item.price.toLocaleString()} $</span><button class="remove-item" data-idx="${idx}">✖ Supprimer</button></div>`; });
         cartDiv.innerHTML = html;
         countSpan.innerText = cart.length;
         totalSpan.innerText = total.toLocaleString();
@@ -987,16 +1027,16 @@
         modalDiv.className = "modal";
         modalDiv.style.display = "flex";
         modalDiv.innerHTML = `
-            <div class="modal-content">
+            <div class="modal-content" style="max-width: 550px;">
                 <span class="close-modal">&times;</span>
-                <h2 style="color:#1e3a8a;"><i class="fas fa-store"></i> Armurerie Légale</h2>
-                <p><strong>🕒 Horaires d'ouverture :</strong><br>Lundi - Vendredi : 21h → 00h<br>Samedi : 21h → 02h<br>Dimanche : Fermé</p>
-                <hr style="margin:1rem 0;">
-                <h3 style="color:#e31b23;">📅 Demande de rendez-vous</h3>
-                <input type="text" id="rdvNomModal" placeholder="Nom RP" style="width:100%; margin:8px 0; padding:12px; border-radius:16px; border:1px solid #e2e8f0; transition: all 0.3s;">
-                <input type="text" id="rdvPrenomModal" placeholder="Prénom RP" style="width:100%; margin:8px 0; padding:12px; border-radius:16px; border:1px solid #e2e8f0; transition: all 0.3s;">
-                <input type="tel" id="rdvPhoneModal" placeholder="Téléphone RP" style="width:100%; margin:8px 0; padding:12px; border-radius:16px; border:1px solid #e2e8f0; transition: all 0.3s;">
-                <button id="sendRdvModalBtn" style="background:#e31b23; padding:14px; border:none; border-radius:50px; margin-top:15px; color:white; font-weight:800; cursor:pointer; transition: all 0.3s;">Envoyer la demande</button>
+                <h2 style="color:#1e3a8a; font-size: 1.8rem; margin-bottom: 1rem;"><i class="fas fa-store"></i> Armurerie Légale</h2>
+                <p style="font-size: 1.1rem;"><strong>🕒 Horaires d'ouverture :</strong><br>Lundi - Vendredi : 21h → 00h<br>Samedi : 21h → 02h<br>Dimanche : Fermé</p>
+                <hr style="margin:1.5rem 0;">
+                <h3 style="color:#e31b23; font-size: 1.4rem; margin-bottom: 1rem;"><i class="fas fa-calendar-alt"></i> Demande de rendez-vous</h3>
+                <input type="text" id="rdvNomModal" placeholder="Nom RP *" style="width:100%; margin:10px 0; padding:14px; border-radius:20px; border:2px solid #e2e8f0; font-size:1rem; transition: all 0.3s;">
+                <input type="text" id="rdvPrenomModal" placeholder="Prénom RP *" style="width:100%; margin:10px 0; padding:14px; border-radius:20px; border:2px solid #e2e8f0; font-size:1rem; transition: all 0.3s;">
+                <input type="tel" id="rdvPhoneModal" placeholder="Téléphone RP *" style="width:100%; margin:10px 0; padding:14px; border-radius:20px; border:2px solid #e2e8f0; font-size:1rem; transition: all 0.3s;">
+                <button id="sendRdvModalBtn" style="background:#e31b23; padding:16px; border:none; border-radius:50px; margin-top:20px; color:white; font-weight:800; font-size:1.1rem; cursor:pointer; transition: all 0.3s; width:100%;">Envoyer la demande</button>
             </div>
         `;
         document.body.appendChild(modalDiv);
@@ -1006,7 +1046,7 @@
             input.addEventListener('focus', (e) => {
                 e.target.style.transform = 'translateX(5px)';
                 e.target.style.borderColor = '#e31b23';
-                e.target.style.boxShadow = '0 0 0 3px rgba(227,27,35,0.1)';
+                e.target.style.boxShadow = '0 0 0 4px rgba(227,27,35,0.1)';
             });
             input.addEventListener('blur', (e) => {
                 e.target.style.transform = 'translateX(0)';
@@ -1050,8 +1090,8 @@
         document.querySelectorAll(".cat-btn").forEach(btn => {
             btn.classList.remove("active");
             let catVal = btn.dataset.cat;
-            if(catVal === "Accueil" && !currentCategory) btn.classList.add("active");
-            else if(currentCategory === catVal) btn.classList.add("active");
+            if(catVal === "Accueil" && !currentCategory && searchFilter === "") btn.classList.add("active");
+            else if(currentCategory === catVal && searchFilter === "") btn.classList.add("active");
         });
     }
 
@@ -1061,24 +1101,14 @@
     }
     function closeCart() { document.getElementById("cartSidebar").classList.remove("open"); document.getElementById("overlay").style.display = "none"; }
 
-    const formInputs = ['rpNom', 'rpPrenom', 'rpBirth', 'rpPhone'];
-    formInputs.forEach(id => {
-        const input = document.getElementById(id);
-        if(input) {
-            input.addEventListener('focus', (e) => {
-                e.target.style.transform = 'translateX(5px)';
-                e.target.style.borderColor = '#e31b23';
-                e.target.style.boxShadow = '0 0 0 3px rgba(227,27,35,0.1)';
-            });
-            input.addEventListener('blur', (e) => {
-                e.target.style.transform = 'translateX(0)';
-                e.target.style.borderColor = '#e2e8f0';
-                e.target.style.boxShadow = 'none';
-            });
-        }
+    // Gestionnaire de recherche globale
+    document.getElementById("searchInput")?.addEventListener("input", (e) => { 
+        searchFilter = e.target.value; 
+        currentCategory = null;
+        render();
+        highlightCat();
     });
-
-    document.getElementById("searchInput")?.addEventListener("input", (e) => { searchFilter = e.target.value; render(); });
+    
     document.getElementById("cartIcon")?.addEventListener("click", openCart);
     document.getElementById("closeCartBtn")?.addEventListener("click", closeCart);
     document.getElementById("closeCartBtn2")?.addEventListener("click", closeCart);
