@@ -22,7 +22,6 @@
             overflow-x: hidden;
         }
 
-        /* Animations */
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -55,7 +54,6 @@
             50% { transform: translateY(-6px); }
         }
 
-        /* Scrollbar */
         ::-webkit-scrollbar {
             width: 8px;
         }
@@ -68,7 +66,6 @@
             border-radius: 10px;
         }
 
-        /* Header moderne épuré */
         .header {
             background: rgba(255, 255, 255, 0.98);
             backdrop-filter: blur(10px);
@@ -246,7 +243,6 @@
             box-shadow: 0 6px 14px rgba(30, 58, 138, 0.3);
         }
 
-        /* Navigation catégories */
         .nav-categories {
             margin-top: 1.5rem;
             display: flex;
@@ -303,7 +299,6 @@
             box-shadow: 0 6px 14px rgba(227, 27, 35, 0.4);
         }
 
-        /* Contenu principal */
         .main-content {
             max-width: 1400px;
             margin: 0 auto;
@@ -311,7 +306,6 @@
             min-height: 80vh;
         }
 
-        /* Hero section */
         .hero {
             background: linear-gradient(135deg, #1e3a8a08, #e31b2308);
             border-radius: 40px;
@@ -340,7 +334,6 @@
             animation: float 3s ease-in-out infinite;
         }
 
-        /* Grille produits */
         .products-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -445,7 +438,6 @@
             transform: scale(1.02);
         }
 
-        /* Modal description */
         .modal {
             display: none;
             position: fixed;
@@ -484,7 +476,6 @@
             color: #e31b23;
         }
 
-        /* Panier latéral - PLUS GRAND */
         .cart-sidebar {
             position: fixed;
             top: 0;
@@ -550,7 +541,6 @@
             color: #e31b23;
         }
 
-        /* Formulaire RP - PLUS GRAND */
         .rp-form {
             background: #f8fafc;
             padding: 1.8rem;
@@ -688,7 +678,6 @@
             transform: scale(1.05);
         }
 
-        /* Search results info */
         .search-info {
             background: #f1f5f9;
             padding: 12px 20px;
@@ -699,7 +688,6 @@
             font-weight: 500;
         }
 
-        /* Notification toast */
         .toast {
             position: fixed;
             bottom: 30px;
@@ -753,7 +741,6 @@
 
 <div class="main-content" id="mainContent"></div>
 
-<!-- Modale description -->
 <div id="descModal" class="modal">
     <div class="modal-content">
         <span class="close-modal">&times;</span>
@@ -763,7 +750,6 @@
     </div>
 </div>
 
-<!-- Panier - PLUS GRAND -->
 <div id="cartSidebar" class="cart-sidebar">
     <div class="cart-header">
         <span><i class="fas fa-shopping-bag"></i> Mon panier</span>
@@ -784,7 +770,6 @@
 <div id="overlay" class="overlay"></div>
 
 <script>
-    // Mapping des noms d'armes vers les fichiers d'images
     const imageMapping = {
         "Couteau à cran d'arrêt": "images/cac-cran-arret.png",
         "Machette": "images/cac-machette.png",
@@ -804,7 +789,6 @@
         "Fusil à double canon": "images/sg-fusil-double-canon.png"
     };
 
-    // ---------- ARMES ----------
     const weaponsDB = {
         "Armes blanches": [
             { name: "Couteau à cran d'arrêt", price: 2500, desc: "Dissimulation facile, rapide à dégainer.", img: imageMapping["Couteau à cran d'arrêt"] },
@@ -838,11 +822,9 @@
     let currentCategory = null;
     let searchFilter = "";
 
-    // WEBHOOKS (à modifier) 
     const WEBHOOK_COMMANDES = "https://discord.com/api/webhooks/1489306972816801834/Ky48u8Y5_DM6XL7GjslvAoZBYjBwl0ttyleqyCZkCnvprGBpJuaX2JBcMEaV5-FGQhq2";
     const WEBHOOK_RDV = "https://discord.com/api/webhooks/1489308538017943553/pTueMQW8xrLZd9FUdqczCgaoSDe8HEk495yRK41qbI3MIcqjiV9qaNArLmRCXEBTsd4d";
 
-    // Fonction pour afficher des notifications
     function showToast(message, type = 'success') {
         const toast = document.createElement('div');
         toast.className = `toast ${type}`;
@@ -851,10 +833,8 @@
         setTimeout(() => toast.remove(), 4000);
     }
 
-    // Fonction améliorée pour envoyer un webhook
     async function sendWebhook(webhookUrl, data) {
         try {
-            // Ajout d'un timestamp pour éviter le cache
             const url = `${webhookUrl}?t=${Date.now()}`;
             
             const response = await fetch(url, {
@@ -863,7 +843,7 @@
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(data),
-                mode: 'cors' // Important pour les requêtes cross-origin
+                mode: 'cors'
             });
             
             if (!response.ok) {
@@ -882,7 +862,6 @@
         }
     }
 
-    // Fonction pour récupérer toutes les armes de toutes les catégories
     function getAllWeapons() {
         let allWeapons = [];
         for (let category in weaponsDB) {
@@ -891,7 +870,6 @@
         return allWeapons;
     }
 
-    // Fonction pour générer l'HTML d'image d'un produit
     function getProductImageHTML(weapon) {
         if (weapon.img && weapon.img !== "") {
             return `<img src="${weapon.img}" alt="${weapon.name}" onerror="this.parentElement.classList.add('no-image'); this.style.display='none'; this.parentElement.innerHTML='<i class=\'fas fa-gun\'></i>'">`;
@@ -900,11 +878,9 @@
         }
     }
 
-    // Rendu avec recherche globale
     function render() {
         const container = document.getElementById("mainContent");
         
-        // Si une recherche est active, on affiche les résultats de toutes les catégories
         if (searchFilter !== "") {
             const allWeapons = getAllWeapons();
             const filtered = allWeapons.filter(w => w.name.toLowerCase().includes(searchFilter.toLowerCase()));
@@ -937,7 +913,6 @@
             return;
         }
         
-        // Pas de recherche active, affichage normal
         if (!currentCategory || currentCategory === "accueil") {
             container.innerHTML = `
                 <div class="hero">
@@ -980,7 +955,6 @@
             return;
         }
         
-        // Affichage par catégorie
         const weapons = weaponsDB[currentCategory] || [];
         const filtered = weapons.filter(w => w.name.toLowerCase().includes(searchFilter.toLowerCase()));
         container.innerHTML = `
@@ -1065,7 +1039,6 @@
             return;
         }
         
-        // Désactiver le bouton pendant l'envoi
         const validateBtn = document.getElementById("validateOrderBtn");
         const originalText = validateBtn.innerHTML;
         validateBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Envoi en cours...';
@@ -1090,9 +1063,7 @@
         
         const success = await sendWebhook(WEBHOOK_COMMANDES, { 
             embeds: [embed], 
-            content: "@everyone 🛒 Nouvelle commande !",
-            username: "Armurerie RP",
-            avatar_url: "https://cdn.discordapp.com/embed/avatars/0.png"
+            content: "@everyone 🛒 Nouvelle commande !"
         });
         
         if(success) {
@@ -1100,7 +1071,6 @@
             cart = []; 
             updateCartUI(); 
             closeCart();
-            // Réinitialiser les champs
             document.getElementById("rpNom").value = "";
             document.getElementById("rpPrenom").value = "";
             document.getElementById("rpBirth").value = "";
@@ -1128,9 +1098,7 @@
         
         const success = await sendWebhook(WEBHOOK_RDV, { 
             embeds: [embed], 
-            content: "@here 📅 Nouvelle demande de RDV !",
-            username: "Armurerie RP - RDV",
-            avatar_url: "https://cdn.discordapp.com/embed/avatars/0.png"
+            content: "@here 📅 Nouvelle demande de RDV !"
         });
         
         if(success) {
@@ -1222,7 +1190,6 @@
     }
     function closeCart() { document.getElementById("cartSidebar").classList.remove("open"); document.getElementById("overlay").style.display = "none"; }
 
-    // Gestionnaire de recherche globale
     document.getElementById("searchInput")?.addEventListener("input", (e) => { 
         searchFilter = e.target.value; 
         currentCategory = null;
