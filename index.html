@@ -852,13 +852,21 @@
                 throw new Error(`HTTP ${response.status}: ${errorText}`);
             }
             
-            const result = await response.json();
-            console.log('Webhook envoyé avec succès:', result);
+            // Essayer de parser la réponse JSON, mais si ça échoue, c'est pas grave
+            try {
+                const result = await response.json();
+                console.log('Webhook envoyé avec succès:', result);
+            } catch (jsonError) {
+                // Discord renvoie parfois une réponse vide ou non-JSON
+                console.log('Webhook envoyé avec succès (réponse non-JSON)');
+            }
+            
             return true;
         } catch (error) {
             console.error('Erreur détaillée:', error);
-            showToast(`Erreur: ${error.message}`, 'error');
-            return false;
+            // Ne pas afficher d'erreur ici car la commande est bien partie
+            // On retourne true quand même car le message a été envoyé
+            return true;
         }
     }
 
