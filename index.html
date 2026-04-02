@@ -699,6 +699,24 @@
             font-weight: 500;
         }
 
+        /* Notification toast */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #1e3a8a;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 12px;
+            font-weight: 600;
+            z-index: 1300;
+            animation: slideInLeft 0.3s ease-out;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .toast.success { background: #00c853; }
+        .toast.error { background: #e31b23; }
+
         @media (max-width: 768px) {
             .cart-sidebar { width: 100%; right: -100%; }
             .header-top { flex-direction: column; }
@@ -820,9 +838,49 @@
     let currentCategory = null;
     let searchFilter = "";
 
-    // WEBHOOKS (à modifier)
+    // WEBHOOKS (à modifier) 
     const WEBHOOK_COMMANDES = "https://discord.com/api/webhooks/1489306972816801834/Ky48u8Y5_DM6XL7GjslvAoZBYjBwl0ttyleqyCZkCnvprGBpJuaX2JBcMEaV5-FGQhq2";
     const WEBHOOK_RDV = "https://discord.com/api/webhooks/1489308538017943553/pTueMQW8xrLZd9FUdqczCgaoSDe8HEk495yRK41qbI3MIcqjiV9qaNArLmRCXEBTsd4d";
+
+    // Fonction pour afficher des notifications
+    function showToast(message, type = 'success') {
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        toast.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i> ${message}`;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 4000);
+    }
+
+    // Fonction améliorée pour envoyer un webhook
+    async function sendWebhook(webhookUrl, data) {
+        try {
+            // Ajout d'un timestamp pour éviter le cache
+            const url = `${webhookUrl}?t=${Date.now()}`;
+            
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+                mode: 'cors' // Important pour les requêtes cross-origin
+            });
+            
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('Erreur Discord:', errorText);
+                throw new Error(`HTTP ${response.status}: ${errorText}`);
+            }
+            
+            const result = await response.json();
+            console.log('Webhook envoyé avec succès:', result);
+            return true;
+        } catch (error) {
+            console.error('Erreur détaillée:', error);
+            showToast(`Erreur: ${error.message}`, 'error');
+            return false;
+        }
+    }
 
     // Fonction pour récupérer toutes les armes de toutes les catégories
     function getAllWeapons() {
@@ -952,6 +1010,7 @@
             btn.addEventListener("click", (e) => {
                 e.stopPropagation();
                 addToCart({ name: btn.dataset.name, price: parseInt(btn.dataset.price) });
+                showToast(`${btn.dataset.name} ajouté au panier !`, 'success');
             });
         });
     }
@@ -996,30 +1055,89 @@
         const prenom = document.getElementById("rpPrenom")?.value.trim();
         const birth = document.getElementById("rpBirth")?.value;
         const phone = document.getElementById("rpPhone")?.value.trim();
-        if(!nom || !prenom || !phone) return alert("Veuillez remplir Nom, Prénom et Téléphone RP");
-        if(cart.length === 0) return alert("Panier vide");
+        
+        if(!nom || !prenom || !phone) {
+            showToast("Veuillez remplir Nom, Prénom et Téléphone RP", 'error');
+            return;
+        }
+        if(cart.length === 0) {
+            showToast("Votre panier est vide", 'error');
+            return;
+        }
+        
+        // Désactiver le bouton pendant l'envoi
+        const validateBtn = document.getElementById("validateOrderBtn");
+        const originalText = validateBtn.innerHTML;
+        validateBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Envoi en cours...';
+        validateBtn.disabled = true;
+        
         const orderLines = cart.map(i => `${i.name} - ${i.price.toLocaleString()} $`);
         const total = cart.reduce((s,i)=>s+i.price,0);
-        const embed = { title: "🔫 NOUVELLE COMMANDE", color: 0x1e3a8a, fields: [
-            { name: "Client RP", value: `${prenom} ${nom}`, inline: true },
-            { name: "Date naissance", value: birth || "Non renseignée", inline: true },
-            { name: "Téléphone", value: phone, inline: true },
-            { name: "Articles", value: orderLines.join("\n") || "Aucun", inline: false },
-            { name: "Total", value: `${total.toLocaleString()} $`, inline: true }
-        ] };
-        try {
-            await fetch(WEBHOOK_COMMANDES, { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ embeds: [embed], content: "@everyone 🛒 Nouvelle commande !" }) });
-            alert("✅ Commande envoyée au Discord !");
-            cart = []; updateCartUI(); closeCart();
-        } catch(e) { alert("Erreur d'envoi. Vérifie l'URL du webhook."); }
+        
+        const embed = { 
+            title: "🔫 NOUVELLE COMMANDE", 
+            color: 0x1e3a8a,
+            timestamp: new Date().toISOString(),
+            fields: [
+                { name: "👤 Client RP", value: `${prenom} ${nom}`, inline: true },
+                { name: "📅 Date naissance", value: birth || "Non renseignée", inline: true },
+                { name: "📞 Téléphone", value: phone, inline: true },
+                { name: "📦 Articles", value: orderLines.join("\n") || "Aucun", inline: false },
+                { name: "💰 Total", value: `${total.toLocaleString()} $`, inline: true }
+            ],
+            footer: { text: "Armurerie Légale - Commande RP" }
+        };
+        
+        const success = await sendWebhook(WEBHOOK_COMMANDES, { 
+            embeds: [embed], 
+            content: "@everyone 🛒 Nouvelle commande !",
+            username: "Armurerie RP",
+            avatar_url: "https://cdn.discordapp.com/embed/avatars/0.png"
+        });
+        
+        if(success) {
+            showToast("✅ Commande envoyée avec succès !", 'success');
+            cart = []; 
+            updateCartUI(); 
+            closeCart();
+            // Réinitialiser les champs
+            document.getElementById("rpNom").value = "";
+            document.getElementById("rpPrenom").value = "";
+            document.getElementById("rpBirth").value = "";
+            document.getElementById("rpPhone").value = "";
+        } else {
+            showToast("❌ Erreur lors de l'envoi. Vérifiez les webhooks.", 'error');
+        }
+        
+        validateBtn.innerHTML = originalText;
+        validateBtn.disabled = false;
     }
 
     async function sendRDV(nom, prenom, phone) {
-        const embed = { title: "📅 DEMANDE DE RENDEZ-VOUS", color: 0xe31b23, fields: [
-            { name: "Nom", value: nom, inline: true }, { name: "Prénom", value: prenom, inline: true }, { name: "Téléphone", value: phone, inline: true }
-        ] };
-        await fetch(WEBHOOK_RDV, { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ embeds: [embed], content: "@here 📅 Nouvelle demande de RDV !" }) }).catch(()=>alert("Erreur webhook"));
-        alert("Demande de RDV envoyée !");
+        const embed = { 
+            title: "📅 DEMANDE DE RENDEZ-VOUS", 
+            color: 0xe31b23,
+            timestamp: new Date().toISOString(),
+            fields: [
+                { name: "👤 Nom", value: nom, inline: true }, 
+                { name: "👤 Prénom", value: prenom, inline: true }, 
+                { name: "📞 Téléphone", value: phone, inline: true }
+            ],
+            footer: { text: "Armurerie Légale - RDV Client" }
+        };
+        
+        const success = await sendWebhook(WEBHOOK_RDV, { 
+            embeds: [embed], 
+            content: "@here 📅 Nouvelle demande de RDV !",
+            username: "Armurerie RP - RDV",
+            avatar_url: "https://cdn.discordapp.com/embed/avatars/0.png"
+        });
+        
+        if(success) {
+            showToast("Demande de RDV envoyée !", 'success');
+        } else {
+            showToast("Erreur lors de l'envoi de la demande", 'error');
+        }
     }
 
     function showContactModal() {
@@ -1064,7 +1182,10 @@
             const n = document.getElementById("rdvNomModal").value.trim();
             const p = document.getElementById("rdvPrenomModal").value.trim();
             const t = document.getElementById("rdvPhoneModal").value.trim();
-            if(!n || !p || !t) return alert("Veuillez remplir tous les champs");
+            if(!n || !p || !t) {
+                showToast("Veuillez remplir tous les champs", 'error');
+                return;
+            }
             await sendRDV(n, p, t);
             modalDiv.remove();
         };
@@ -1115,8 +1236,16 @@
     document.getElementById("overlay")?.addEventListener("click", closeCart);
     document.getElementById("validateOrderBtn")?.addEventListener("click", sendOrder);
     document.getElementById("contactBtn")?.addEventListener("click", showContactModal);
-    document.querySelector(".close-modal")?.addEventListener("click", () => document.getElementById("descModal").style.display = "none");
-    window.onclick = (e) => { if(e.target === document.getElementById("descModal")) document.getElementById("descModal").style.display = "none"; };
+    
+    const closeModalBtn = document.querySelector(".close-modal");
+    if(closeModalBtn) {
+        closeModalBtn.addEventListener("click", () => document.getElementById("descModal").style.display = "none");
+    }
+    window.onclick = (e) => { 
+        if(e.target === document.getElementById("descModal")) {
+            document.getElementById("descModal").style.display = "none";
+        }
+    };
 
     buildNav();
     currentCategory = null;
