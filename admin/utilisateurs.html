@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Gestion utilisateurs | AMMU★NATION</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #f1f5f9; }
+        
+        .sidebar {
+            position: fixed; left: 0; top: 0; width: 280px; height: 100vh;
+            background: linear-gradient(135deg, #1e3a8a, #152e6e); color: white;
+            padding: 2rem 1rem; transition: all 0.3s; z-index: 100;
+        }
+        .sidebar .logo { text-align: center; margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.2); }
+        .sidebar .logo h2 { font-family: 'Orbitron', monospace; font-size: 1.5rem; }
+        .nav-item {
+            display: flex; align-items: center; gap: 12px; padding: 12px 16px;
+            margin: 8px 0; border-radius: 12px; cursor: pointer; transition: all 0.3s;
+            color: rgba(255,255,255,0.8); text-decoration: none;
+        }
+        .nav-item:hover, .nav-item.active { background: #e31b23; color: white; }
+        .nav-item i { width: 24px; }
+        
+        .main-content { margin-left: 280px; padding: 2rem; }
+        .header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 2rem; background: white; padding: 1rem 2rem;
+            border-radius: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .header h1 { font-size: 1.5rem; color: #1e3a8a; }
+        
+        .stats-banner {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem; margin-bottom: 2rem;
+        }
+        .stat-box {
+            background: white; padding: 1rem; border-radius: 16px;
+            text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .stat-box .value { font-size: 1.8rem; font-weight: 800; color: #e31b23; }
+        
+        .users-table {
+            background: white; border-radius: 20px; overflow-x: auto;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        table { width: 100%; border-collapse: collapse; min-width: 700px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eef2f8; }
+        th { background: #f8fafc; color: #1e3a8a; }
+        
+        .role-select {
+            padding: 6px 10px; border: 2px solid #e2e8f0; border-radius: 8px;
+            font-size: 0.85rem; cursor: pointer;
+        }
+        .role-select:focus { outline: none; border-color: #e31b23; }
+        
+        .btn-save-role {
+            background: #00c853; color: white; border: none; padding: 6px 12px;
+            border-radius: 8px; cursor: pointer; margin-left: 5px;
+        }
+        
+        .role-badge {
+            display: inline-block; padding: 4px 12px; border-radius: 50px;
+            font-size: 0.75rem; font-weight: 600;
+        }
+        .role-admin { background: #e31b23; color: white; }
+        .role-copatron { background: #9c27b0; color: white; }
+        .role-manager { background: #ff9800; color: white; }
+        .role-employe { background: #2196f3; color: white; }
+        .role-visiteur { background: #6c757d; color: white; }
+        
+        .toast {
+            position: fixed; bottom: 20px; right: 20px; background: #00c853;
+            color: white; padding: 12px 20px; border-radius: 12px; z-index: 300;
+        }
+        .toast.error { background: #e31b23; }
+        
+        @media (max-width: 768px) {
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.open { transform: translateX(0); }
+            .main-content { margin-left: 0; }
+            .menu-toggle { display: block; position: fixed; top: 1rem; left: 1rem; z-index: 101; background: #1e3a8a; color: white; padding: 10px; border-radius: 8px; cursor: pointer; }
+        }
+        .menu-toggle { display: none; }
+    </style>
+</head>
+<body>
+    <div class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></div>
+    
+    <div class="sidebar" id="sidebar">
+        <div class="logo"><h2>AMMU★NATION</h2><p>Administration</p></div>
+        <a href="index.html" class="nav-item"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a>
+        <a href="produits.html" class="nav-item"><i class="fas fa-gun"></i><span>Gestion des armes</span></a>
+        <a href="commandes.html" class="nav-item"><i class="fas fa-shopping-cart"></i><span>Commandes</span></a>
+        <a href="comptabilite.html" class="nav-item"><i class="fas fa-chart-line"></i><span>Comptabilité</span></a>
+        <a href="utilisateurs.html" class="nav-item active"><i class="fas fa-users"></i><span>Utilisateurs</span></a>
+        <a href="../index.html" class="nav-item"><i class="fas fa-arrow-left"></i><span>Retour au site</span></a>
+    </div>
+    
+    <div class="main-content">
+        <div class="header">
+            <h1><i class="fas fa-users"></i> Gestion des utilisateurs</h1>
+            <button class="logout-btn" id="logoutBtn" style="background:#e31b23; border:none; padding:8px 16px; border-radius:50px; color:white; cursor:pointer;">Déconnexion</button>
+        </div>
+        
+        <div class="stats-banner" id="statsBanner">
+            <div class="stat-box"><div class="value" id="totalUsers">0</div><div class="label">Total utilisateurs</div></div>
+            <div class="stat-box"><div class="value" id="adminCount">0</div><div class="label">Administrateurs</div></div>
+            <div class="stat-box"><div class="value" id="employeCount">0</div><div class="label">Employés</div></div>
+            <div class="stat-box"><div class="value" id="visitorCount">0</div><div class="label">Visiteurs</div></div>
+        </div>
+        
+        <div class="users-table">
+            <table>
+                <thead>
+                    <tr><th>Email</th><th>Nom complet</th><th>Téléphone</th><th>Inscription</th><th>Rôle</th><th>Actions</th></tr>
+                </thead>
+                <tbody id="usersTableBody">
+                    <tr><td colspan="6" style="text-align:center;">Chargement...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, collection, getDocs, updateDoc, doc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        
+        const firebaseConfig = {
+            apiKey: "VOTRE_API_KEY",
+            authDomain: "VOTRE_PROJECT.firebaseapp.com",
+            projectId: "VOTRE_PROJECT_ID",
+            storageBucket: "VOTRE_PROJECT.appspot.com",
+            messagingSenderId: "VOTRE_SENDER_ID",
+            appId: "VOTRE_APP_ID"
+        };
+        
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        
+        let allUsers = [];
+        let currentUserRole = "";
+        
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = message;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+        
+        async function loadUsers() {
+            const usersRef = collection(db, "utilisateurs");
+            const snapshot = await getDocs(usersRef);
+            allUsers = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            
+            updateStats();
+            renderTable();
+        }
+        
+        function updateStats() {
+            const total = allUsers.length;
+            const adminCount = allUsers.filter(u => u.role === "admin").length;
+            const employeCount = allUsers.filter(u => u.role === "employe" || u.role === "manager" || u.role === "copatron").length;
+            const visitorCount = allUsers.filter(u => u.role === "visiteur").length;
+            
+            document.getElementById("totalUsers").innerText = total;
+            document.getElementById("adminCount").innerText = adminCount;
+            document.getElementById("employeCount").innerText = employeCount;
+            document.getElementById("visitorCount").innerText = visitorCount;
+        }
+        
+        function getRoleBadge(role) {
+            const badges = {
+                admin: 'role-admin',
+                copatron: 'role-copatron',
+                manager: 'role-manager',
+                employe: 'role-employe',
+                visiteur: 'role-visiteur'
+            };
+            return `<span class="role-badge ${badges[role] || 'role-visiteur'}">${role?.toUpperCase() || 'VISITEUR'}</span>`;
+        }
+        
+        async function updateUserRole(userId, newRole) {
+            await updateDoc(doc(db, "utilisateurs", userId), { role: newRole });
+            showToast("Rôle mis à jour !");
+            loadUsers();
+        }
+        
+        function renderTable() {
+            const tbody = document.getElementById("usersTableBody");
+            if (allUsers.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Aucun utilisateur</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = allUsers.map(user => `
+                <tr>
+                    <td>${user.email || "-"}</td>
+                    <td>${user.prenom || ''} ${user.nom || ''}</td>
+                    <td>${user.phone || "-"}</td>
+                    <td>${user.dateInscription ? new Date(user.dateInscription).toLocaleDateString('fr-FR') : "-"}</td>
+                    <td>${getRoleBadge(user.role)}</td>
+                    <td>
+                        ${currentUserRole === "admin" ? `
+                            <select class="role-select" data-userid="${user.id}" data-current="${user.role}">
+                                <option value="visiteur" ${user.role === "visiteur" ? 'selected' : ''}>Visiteur</option>
+                                <option value="employe" ${user.role === "employe" ? 'selected' : ''}>Employé</option>
+                                <option value="manager" ${user.role === "manager" ? 'selected' : ''}>Manager</option>
+                                <option value="copatron" ${user.role === "copatron" ? 'selected' : ''}>Co-Patron</option>
+                                <option value="admin" ${user.role === "admin" ? 'selected' : ''}>Admin</option>
+                            </select>
+                            <button class="btn-save-role" data-userid="${user.id}"><i class="fas fa-save"></i></button>
+                        ` : 'Seul un admin peut modifier les rôles'}
+                    </td>
+                </tr>
+            `).join('');
+            
+            // Ajouter les événements pour les sélecteurs de rôle
+            document.querySelectorAll(".btn-save-role").forEach(btn => {
+                btn.addEventListener("click", async (e) => {
+                    const userId = btn.dataset.userid;
+                    const select = document.querySelector(`.role-select[data-userid="${userId}"]`);
+                    const newRole = select.value;
+                    await updateUserRole(userId, newRole);
+                });
+            });
+        }
+        
+        // Vérifier l'authentification et les droits
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) { window.location.href = "../login.html"; return; }
+            
+            const usersRef = collection(db, "utilisateurs");
+            const usersSnap = await getDocs(usersRef);
+            let userData = null;
+            usersSnap.forEach(doc => {
+                if (doc.id === user.uid) {
+                    userData = doc.data();
+                    currentUserRole = userData.role;
+                }
+            });
+            
+            if (currentUserRole !== "admin") {
+                showToast("Accès non autorisé - Réservé aux administrateurs", 'error');
+                setTimeout(() => { window.location.href = "../index.html"; }, 2000);
+                return;
+            }
+            
+            await loadUsers();
+        });
+        
+        document.getElementById("logoutBtn").addEventListener("click", async () => { await signOut(auth); window.location.href = "../index.html"; });
+        document.getElementById("menuToggle")?.addEventListener("click", () => { document.getElementById("sidebar").classList.toggle("open"); });
+    </script>
+</body>
+</html>
