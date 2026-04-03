@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Gestion des commandes | AMMU★NATION</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #f1f5f9; }
+        
+        .sidebar {
+            position: fixed; left: 0; top: 0; width: 280px; height: 100vh;
+            background: linear-gradient(135deg, #1e3a8a, #152e6e); color: white;
+            padding: 2rem 1rem; transition: all 0.3s; z-index: 100;
+        }
+        .sidebar .logo { text-align: center; margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.2); }
+        .sidebar .logo h2 { font-family: 'Orbitron', monospace; font-size: 1.5rem; }
+        .nav-item {
+            display: flex; align-items: center; gap: 12px; padding: 12px 16px;
+            margin: 8px 0; border-radius: 12px; cursor: pointer; transition: all 0.3s;
+            color: rgba(255,255,255,0.8); text-decoration: none;
+        }
+        .nav-item:hover, .nav-item.active { background: #e31b23; color: white; }
+        .nav-item i { width: 24px; }
+        
+        .main-content { margin-left: 280px; padding: 2rem; }
+        .header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 2rem; background: white; padding: 1rem 2rem;
+            border-radius: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .header h1 { font-size: 1.5rem; color: #1e3a8a; }
+        
+        .filters {
+            display: flex; gap: 1rem; margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+        .filters select, .filters input {
+            padding: 10px 16px; border: 2px solid #e2e8f0; border-radius: 12px;
+            font-size: 0.9rem; background: white;
+        }
+        .filters select:focus, .filters input:focus { outline: none; border-color: #e31b23; }
+        
+        .stats-banner {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem; margin-bottom: 2rem;
+        }
+        .stat-box {
+            background: white; padding: 1rem; border-radius: 16px;
+            text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .stat-box .value { font-size: 1.8rem; font-weight: 800; color: #e31b23; }
+        .stat-box .label { color: #6b7280; margin-top: 0.5rem; }
+        
+        .commands-table {
+            background: white; border-radius: 20px; overflow-x: auto;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        table { width: 100%; border-collapse: collapse; min-width: 800px; }
+        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #eef2f8; }
+        th { background: #f8fafc; color: #1e3a8a; font-weight: 700; }
+        
+        .status {
+            display: inline-block; padding: 4px 12px; border-radius: 50px;
+            font-size: 0.8rem; font-weight: 600;
+        }
+        .status.en_attente { background: #fff3cd; color: #856404; }
+        .status.termine { background: #d4edda; color: #155724; }
+        
+        .btn-validate {
+            background: #00c853; color: white; border: none; padding: 6px 12px;
+            border-radius: 8px; cursor: pointer;
+        }
+        .btn-validate:disabled { opacity: 0.5; cursor: not-allowed; }
+        .btn-view {
+            background: #1e3a8a; color: white; border: none; padding: 6px 12px;
+            border-radius: 8px; cursor: pointer; margin-right: 5px;
+        }
+        
+        .modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); z-index: 200; justify-content: center; align-items: center;
+        }
+        .modal-content {
+            background: white; border-radius: 24px; padding: 2rem;
+            max-width: 600px; width: 90%; max-height: 80vh; overflow-y: auto;
+        }
+        .modal-content h2 { margin-bottom: 1rem; color: #1e3a8a; }
+        .product-list { margin: 1rem 0; padding: 1rem; background: #f8fafc; border-radius: 12px; }
+        .product-item { padding: 5px 0; border-bottom: 1px solid #eef2f8; }
+        
+        .toast {
+            position: fixed; bottom: 20px; right: 20px; background: #00c853;
+            color: white; padding: 12px 20px; border-radius: 12px; z-index: 300;
+        }
+        .toast.error { background: #e31b23; }
+        
+        @media (max-width: 768px) {
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.open { transform: translateX(0); }
+            .main-content { margin-left: 0; }
+            .menu-toggle { display: block; position: fixed; top: 1rem; left: 1rem; z-index: 101; background: #1e3a8a; color: white; padding: 10px; border-radius: 8px; cursor: pointer; }
+        }
+        .menu-toggle { display: none; }
+    </style>
+</head>
+<body>
+    <div class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></div>
+    
+    <div class="sidebar" id="sidebar">
+        <div class="logo"><h2>AMMU★NATION</h2><p>Administration</p></div>
+        <a href="index.html" class="nav-item"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a>
+        <a href="produits.html" class="nav-item"><i class="fas fa-gun"></i><span>Gestion des armes</span></a>
+        <a href="commandes.html" class="nav-item active"><i class="fas fa-shopping-cart"></i><span>Commandes</span></a>
+        <a href="comptabilite.html" class="nav-item"><i class="fas fa-chart-line"></i><span>Comptabilité</span></a>
+        <a href="utilisateurs.html" class="nav-item"><i class="fas fa-users"></i><span>Utilisateurs</span></a>
+        <a href="../index.html" class="nav-item"><i class="fas fa-arrow-left"></i><span>Retour au site</span></a>
+    </div>
+    
+    <div class="main-content">
+        <div class="header">
+            <h1><i class="fas fa-shopping-cart"></i> Gestion des commandes</h1>
+            <button class="logout-btn" id="logoutBtn" style="background:#e31b23; border:none; padding:8px 16px; border-radius:50px; color:white; cursor:pointer;">Déconnexion</button>
+        </div>
+        
+        <div class="stats-banner" id="statsBanner">
+            <div class="stat-box"><div class="value" id="totalCommands">0</div><div class="label">Commandes totales</div></div>
+            <div class="stat-box"><div class="value" id="totalCA">0 $</div><div class="label">CA total</div></div>
+            <div class="stat-box"><div class="value" id="totalBenefice">0 $</div><div class="label">Bénéfice total</div></div>
+            <div class="stat-box"><div class="value" id="pendingCommands">0</div><div class="label">En attente</div></div>
+        </div>
+        
+        <div class="filters">
+            <select id="filterStatus">
+                <option value="all">Tous les statuts</option>
+                <option value="en_attente">En attente</option>
+                <option value="termine">Terminé</option>
+            </select>
+            <input type="text" id="searchInput" placeholder="Rechercher un client...">
+        </div>
+        
+        <div class="commands-table">
+            <table>
+                <thead>
+                    <tr><th>Réf.</th><th>Client</th><th>Date</th><th>Total</th><th>Bénéfice</th><th>Validé par</th><th>Statut</th><th>Actions</th></tr>
+                </thead>
+                <tbody id="commandsTableBody">
+                    <tr><td colspan="8" style="text-align:center;">Chargement...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <!-- Modal Détails -->
+    <div id="detailModal" class="modal">
+        <div class="modal-content">
+            <h2><i class="fas fa-info-circle"></i> Détails de la commande</h2>
+            <div id="detailContent"></div>
+            <div class="modal-buttons" style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+                <button class="btn-cancel" id="closeDetailBtn" style="flex:1; padding:12px; border:none; border-radius:50px; background:#e2e8f0; cursor:pointer;">Fermer</button>
+            </div>
+        </div>
+    </div>
+    
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, collection, getDocs, updateDoc, doc, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        
+        const firebaseConfig = {
+            apiKey: "VOTRE_API_KEY",
+            authDomain: "VOTRE_PROJECT.firebaseapp.com",
+            projectId: "VOTRE_PROJECT_ID",
+            storageBucket: "VOTRE_PROJECT.appspot.com",
+            messagingSenderId: "VOTRE_SENDER_ID",
+            appId: "VOTRE_APP_ID"
+        };
+        
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        
+        let allCommands = [];
+        let currentUserRole = "";
+        let currentUserUid = "";
+        
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = message;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+        
+        async function loadCommands() {
+            const commandsRef = collection(db, "commandes");
+            const snapshot = await getDocs(commandsRef);
+            allCommands = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            
+            // Trier par date décroissante
+            allCommands.sort((a, b) => new Date(b.dateCommande) - new Date(a.dateCommande));
+            
+            updateStats();
+            applyFilters();
+        }
+        
+        function updateStats() {
+            const total = allCommands.length;
+            const totalCA = allCommands.reduce((sum, cmd) => sum + (cmd.totalVente || 0), 0);
+            const totalBenefice = allCommands.reduce((sum, cmd) => sum + (cmd.benefice || 0), 0);
+            const pending = allCommands.filter(cmd => cmd.statut === "en_attente").length;
+            
+            document.getElementById("totalCommands").innerText = total;
+            document.getElementById("totalCA").innerText = totalCA.toLocaleString() + " $";
+            document.getElementById("totalBenefice").innerText = totalBenefice.toLocaleString() + " $";
+            document.getElementById("pendingCommands").innerText = pending;
+        }
+        
+        function applyFilters() {
+            const statusFilter = document.getElementById("filterStatus").value;
+            const searchTerm = document.getElementById("searchInput").value.toLowerCase();
+            
+            let filtered = allCommands;
+            if (statusFilter !== "all") {
+                filtered = filtered.filter(cmd => cmd.statut === statusFilter);
+            }
+            if (searchTerm) {
+                filtered = filtered.filter(cmd => 
+                    cmd.clientNom?.toLowerCase().includes(searchTerm) ||
+                    cmd.clientEmail?.toLowerCase().includes(searchTerm)
+                );
+            }
+            
+            renderTable(filtered);
+        }
+        
+        function renderTable(commands) {
+            const tbody = document.getElementById("commandsTableBody");
+            if (commands.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;">Aucune commande trouvée</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = commands.map(cmd => `
+                <tr>
+                    <td>#${cmd.id.slice(0, 8)}</td>
+                    <td>${cmd.clientNom || cmd.clientEmail}</td>
+                    <td>${new Date(cmd.dateCommande).toLocaleDateString('fr-FR')}</td>
+                    <td>${(cmd.totalVente || 0).toLocaleString()} $</td>
+                    <td style="color: #00c853;">${(cmd.benefice || 0).toLocaleString()} $</td>
+                    <td>${cmd.valideurNom || "-"}</td>
+                    <td><span class="status ${cmd.statut}">${cmd.statut === "en_attente" ? "En attente" : "Terminé"}</span></td>
+                    <td>
+                        <button class="btn-view" onclick="viewDetails('${cmd.id}')"><i class="fas fa-eye"></i></button>
+                        ${cmd.statut === "en_attente" && (currentUserRole === "admin" || currentUserRole === "copatron" || currentUserRole === "manager" || currentUserRole === "employe") ? 
+                            `<button class="btn-validate" onclick="validateCommand('${cmd.id}')"><i class="fas fa-check"></i> Valider</button>` : ''}
+                    </td>
+                </tr>
+            `).join('');
+        }
+        
+        window.viewDetails = async (commandId) => {
+            const command = allCommands.find(c => c.id === commandId);
+            if (!command) return;
+            
+            const modal = document.getElementById("detailModal");
+            const content = document.getElementById("detailContent");
+            
+            content.innerHTML = `
+                <p><strong>Référence:</strong> #${command.id}</p>
+                <p><strong>Client:</strong> ${command.clientNom || command.clientEmail}</p>
+                <p><strong>Email:</strong> ${command.clientEmail || "-"}</p>
+                <p><strong>Date commande:</strong> ${new Date(command.dateCommande).toLocaleString('fr-FR')}</p>
+                <p><strong>Statut:</strong> <span class="status ${command.statut}">${command.statut === "en_attente" ? "En attente" : "Terminé"}</span></p>
+                ${command.dateValidation ? `<p><strong>Date validation:</strong> ${new Date(command.dateValidation).toLocaleString('fr-FR')}</p>` : ''}
+                ${command.valideurNom ? `<p><strong>Validé par:</strong> ${command.valideurNom}</p>` : ''}
+                <div class="product-list">
+                    <strong>Articles commandés:</strong>
+                    ${command.produits?.map(p => `<div class="product-item">${p.nom} - ${p.prix.toLocaleString()} $</div>`).join('') || 'Aucun article'}
+                </div>
+                <p><strong>Total vente:</strong> ${(command.totalVente || 0).toLocaleString()} $</p>
+                <p><strong>Total achat:</strong> ${(command.totalAchat || 0).toLocaleString()} $</p>
+                <p><strong>Bénéfice:</strong> <span style="color: #00c853;">${(command.benefice || 0).toLocaleString()} $</span></p>
+            `;
+            
+            modal.style.display = "flex";
+        };
+        
+        window.validateCommand = async (commandId) => {
+            if (!confirm("Valider cette commande ?")) return;
+            
+            const commandRef = doc(db, "commandes", commandId);
+            await updateDoc(commandRef, {
+                statut: "termine",
+                dateValidation: new Date().toISOString(),
+                uidValideur: currentUserUid,
+                valideurNom: currentUserNom
+            });
+            
+            showToast("Commande validée !");
+            loadCommands();
+        };
+        
+        // Vérifier l'authentification
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) { window.location.href = "../login.html"; return; }
+            
+            currentUserUid = user.uid;
+            const userDoc = await getDocs(collection(db, "utilisateurs"));
+            let userData = null;
+            userDoc.forEach(doc => {
+                if (doc.id === user.uid) {
+                    userData = doc.data();
+                    currentUserRole = userData.role;
+                    currentUserNom = `${userData.prenom || ''} ${userData.nom || ''}`.trim() || user.email;
+                }
+            });
+            
+            const allowedRoles = ["admin", "copatron", "manager", "employe"];
+            if (!allowedRoles.includes(currentUserRole)) {
+                showToast("Accès non autorisé", 'error');
+                setTimeout(() => { window.location.href = "../index.html"; }, 2000);
+                return;
+            }
+            
+            loadCommands();
+        });
+        
+        document.getElementById("filterStatus").addEventListener("change", applyFilters);
+        document.getElementById("searchInput").addEventListener("input", applyFilters);
+        document.getElementById("closeDetailBtn").addEventListener("click", () => {
+            document.getElementById("detailModal").style.display = "none";
+        });
+        document.getElementById("logoutBtn").addEventListener("click", async () => { await signOut(auth); window.location.href = "../index.html"; });
+        document.getElementById("menuToggle")?.addEventListener("click", () => { document.getElementById("sidebar").classList.toggle("open"); });
+        
+        window.onclick = (e) => { if (e.target === document.getElementById("detailModal")) {
+            document.getElementById("detailModal").style.display = "none";
+        }};
+    </script>
+</body>
+</html>
