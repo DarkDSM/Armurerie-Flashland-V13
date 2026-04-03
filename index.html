@@ -3,11 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>ARMUERIE | GTA RP - Premium Armory</title>
+    <title>AMMU★NATION | GTA RP - Premium Armory</title>
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <!-- Firebase -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, collection, getDocs, doc, getDoc, addDoc, updateDoc, query, where, orderBy, Timestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
+
+        // Configuration Firebase (À REMPLACER AVEC TES DONNÉES)
+        const firebaseConfig = {
+            apiKey: "VOTRE_API_KEY",
+            authDomain: "VOTRE_PROJECT.firebaseapp.com",
+            projectId: "VOTRE_PROJECT_ID",
+            storageBucket: "VOTRE_PROJECT.appspot.com",
+            messagingSenderId: "VOTRE_SENDER_ID",
+            appId: "VOTRE_APP_ID"
+        };
+
+        // Initialisation
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const storage = getStorage(app);
+
+        // Rendre disponibles globalement
+        window.db = db;
+        window.auth = auth;
+        window.storage = storage;
+        window.Timestamp = Timestamp;
+    </script>
     <style>
         * {
             margin: 0;
@@ -210,14 +241,14 @@
             }
         }
 
-        .cart-btn, .rdv-btn {
+        .cart-btn, .rdv-btn, .account-btn {
             padding: 10px 20px;
             font-size: 0.9rem;
             justify-content: center;
         }
 
         @media (min-width: 768px) {
-            .cart-btn, .rdv-btn {
+            .cart-btn, .rdv-btn, .account-btn {
                 padding: 14px 32px;
                 font-size: 1.1rem;
             }
@@ -315,6 +346,74 @@
             color: white;
             transform: translateY(-3px);
             box-shadow: 0 6px 14px rgba(30, 58, 138, 0.3);
+        }
+
+        .account-btn {
+            background: linear-gradient(135deg, #2d3748, #1a202c);
+            border-radius: 50px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            transition: all 0.3s;
+            color: white;
+            border: none;
+            position: relative;
+            overflow: hidden;
+            text-decoration: none;
+        }
+
+        .account-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .account-btn:hover::before {
+            left: 100%;
+        }
+
+        .account-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            background: linear-gradient(135deg, #e31b23, #b01018);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: #f1f5f9;
+            padding: 8px 20px;
+            border-radius: 50px;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: #1e3a8a;
+        }
+
+        .logout-btn {
+            background: #e31b23;
+            border: none;
+            padding: 5px 12px;
+            border-radius: 50px;
+            color: white;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            transform: scale(1.05);
+            background: #b01018;
         }
 
         .nav-categories {
@@ -761,59 +860,6 @@
             }
         }
 
-        .rp-form {
-            background: #f8fafc;
-            padding: 1rem;
-            border-radius: 20px;
-            margin: 1rem 0;
-            transition: all 0.3s;
-        }
-        @media (min-width: 768px) {
-            .rp-form {
-                padding: 1.8rem;
-                border-radius: 28px;
-                margin: 1.5rem 0;
-            }
-        }
-
-        .rp-form h3 {
-            color: #1e3a8a;
-            margin-bottom: 0.8rem;
-            font-size: 1rem;
-            font-weight: 700;
-        }
-        @media (min-width: 768px) {
-            .rp-form h3 {
-                margin-bottom: 1.2rem;
-                font-size: 1.2rem;
-            }
-        }
-
-        .rp-form input {
-            width: 100%;
-            padding: 10px 12px;
-            margin: 8px 0;
-            background: white;
-            border: 1px solid #e2e8f0;
-            border-radius: 20px;
-            transition: all 0.3s;
-            font-size: 0.9rem;
-        }
-        @media (min-width: 768px) {
-            .rp-form input {
-                padding: 14px 16px;
-                margin: 10px 0;
-                font-size: 1rem;
-            }
-        }
-
-        .rp-form input:focus {
-            outline: none;
-            border-color: #e31b23;
-            box-shadow: 0 0 0 4px rgba(227, 27, 35, 0.1);
-            transform: translateX(5px);
-        }
-
         .btn-validate {
             background: #00c853;
             padding: 12px;
@@ -999,13 +1045,22 @@
 
         .toast.success { background: #00c853; }
         .toast.error { background: #e31b23; }
+
+        .admin-badge {
+            background: #e31b23;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            margin-left: 10px;
+        }
     </style>
 </head>
 <body>
 
 <div class="header">
     <div class="header-top">
-        <div class="logo">
+        <div class="logo" onclick="window.location.href='index.html'">
             <h1>AMMU★NATION</h1>
             <p>Armurerie · Los Santos</p>
         </div>
@@ -1013,13 +1068,15 @@
             <input type="text" id="searchInput" placeholder="Rechercher une arme...">
             <i class="fas fa-search"></i>
         </div>
-        <div class="header-buttons">
+        <div class="header-buttons" id="headerButtons">
             <div class="cart-btn" id="cartIcon">
                 <i class="fas fa-shopping-cart"></i> Panier <span id="cartCount" class="cart-count">0</span>
             </div>
             <button class="rdv-btn" id="contactBtn">
                 <i class="fas fa-calendar-alt"></i> RDV
             </button>
+            <!-- Bouton compte qui sera modifié dynamiquement -->
+            <div id="accountSection"></div>
         </div>
     </div>
     <div class="nav-categories" id="navCategories"></div>
@@ -1043,73 +1100,53 @@
     </div>
     <div id="cartItemsList" class="cart-items">Panier vide</div>
     <div class="cart-total">💰 TOTAL : <span id="cartTotalPrice">0</span> $</div>
-    <div class="rp-form">
-        <h3><i class="fas fa-id-card"></i> Infos client RP</h3>
-        <input type="text" id="rpNom" placeholder="Nom RP *">
-        <input type="text" id="rpPrenom" placeholder="Prénom RP *">
-        <input type="date" id="rpBirth">
-        <input type="tel" id="rpPhone" placeholder="Téléphone *">
-    </div>
-    <button class="btn-validate" id="validateOrderBtn"><i class="fab fa-discord"></i> Valider</button>
+    <button class="btn-validate" id="validateOrderBtn"><i class="fab fa-discord"></i> Valider la commande</button>
     <button class="btn-validate" id="closeCartBtn2" style="background:#e2e8f0; color:#1e293b; margin-top:10px;">Fermer</button>
 </div>
 <div id="overlay" class="overlay"></div>
 
-<script>
-    const imageMapping = {
-        "Couteau à cran d'arrêt": "images/cac-cran-arret.png",
-        "Machette": "images/cac-machette.png",
-        "Poing américain": "images/cac-poing-americain.png",
-        "Katana": "images/cac-katana.png",
-        "Pétoire": "images/pi-petoire.png",
-        "Beretta 9mm": "images/pi-beretta.png",
-        "Pistolet Lourd": "images/pi-pistolet-lourd.png",
-        "Desert Eagle": "images/pi-deagle.png",
-        "Pistolet Vintage": "images/pi-pistolet-vintage.png",
-        "Pistolet mitrailleur": "images/sb-pistolet-mitrailleur.png",
-        "Mitraillette": "images/sb-mitraillette.png",
-        "Mousquet": "images/ar-mousquet.png",
-        "Carabine": "images/ar-carabine.png",
-        "Fusil d'assaut Mk II": "images/ar-fusil-assaut-mk2.png",
-        "Fusil à pompe": "images/sg-fusil-pompe.png",
-        "Fusil à double canon": "images/sg-fusil-double-canon.png"
+<script type="module">
+    // Configuration Firebase (À REMPLACER)
+    const firebaseConfig = {
+        apiKey: "VOTRE_API_KEY",
+        authDomain: "VOTRE_PROJECT.firebaseapp.com",
+        projectId: "VOTRE_PROJECT_ID",
+        storageBucket: "VOTRE_PROJECT.appspot.com",
+        messagingSenderId: "VOTRE_SENDER_ID",
+        appId: "VOTRE_APP_ID"
     };
 
-    const weaponsDB = {
-        "Armes blanches": [
-            { name: "Couteau à cran d'arrêt", price: 2500, desc: "Dissimulation facile, rapide à dégainer.", img: imageMapping["Couteau à cran d'arrêt"] },
-            { name: "Machette", price: 4000, desc: "Lame redoutable pour le corps à corps.", img: imageMapping["Machette"] },
-            { name: "Poing américain", price: 1800, desc: "Coup dévastateur dans la mêlée.", img: imageMapping["Poing américain"] },
-            { name: "Katana", price: 12000, desc: "Lame légendaire, rapidité et précision.", img: imageMapping["Katana"] }
-        ],
-        "Pistolets et revolvers": [
-            { name: "Pétoire", price: 5000, desc: "Ancienne mais fiable.", img: imageMapping["Pétoire"] },
-            { name: "Beretta 9mm", price: 8500, desc: "Précision et cadence.", img: imageMapping["Beretta 9mm"] },
-            { name: "Pistolet Lourd", price: 12500, desc: "Puissance brute.", img: imageMapping["Pistolet Lourd"] },
-            { name: "Desert Eagle", price: 22000, desc: "Le classique .50 AE.", img: imageMapping["Desert Eagle"] },
-            { name: "Pistolet Vintage", price: 7500, desc: "Style rétro.", img: imageMapping["Pistolet Vintage"] }
-        ],
-        "Mitraillettes": [
-            { name: "Pistolet mitrailleur", price: 15000, desc: "Rafale compacte.", img: imageMapping["Pistolet mitrailleur"] },
-            { name: "Mitraillette", price: 18500, desc: "Cadence élevée.", img: imageMapping["Mitraillette"] }
-        ],
-        "Fusils d'assaut": [
-            { name: "Mousquet", price: 9000, desc: "Tir lent mais puissant.", img: imageMapping["Mousquet"] },
-            { name: "Carabine", price: 21000, desc: "Précision moyenne/longue distance.", img: imageMapping["Carabine"] },
-            { name: "Fusil d'assaut Mk II", price: 35000, desc: "Le nec plus ultra.", img: imageMapping["Fusil d'assaut Mk II"] }
-        ],
-        "Fusils de chasse": [
-            { name: "Fusil à pompe", price: 18000, desc: "Ravageur à courte portée.", img: imageMapping["Fusil à pompe"] },
-            { name: "Fusil à double canon", price: 16500, desc: "Deux tirs rapides.", img: imageMapping["Fusil à double canon"] }
-        ]
-    };
+    // Initialisation (si pas déjà fait)
+    if (!window.app) {
+        const { initializeApp } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js");
+        const { getAuth } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js");
+        const { getFirestore } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
+        window.app = initializeApp(firebaseConfig);
+        window.auth = getAuth(window.app);
+        window.db = getFirestore(window.app);
+    }
 
+    const auth = window.auth;
+    const db = window.db;
+
+    // Variables globales
     let cart = [];
     let currentCategory = null;
     let searchFilter = "";
+    let currentUser = null;
+    let currentUserRole = "visiteur";
 
     const WEBHOOK_COMMANDES = "https://discord.com/api/webhooks/1489306972816801834/Ky48u8Y5_DM6XL7GjslvAoZBYjBwl0ttyleqyCZkCnvprGBpJuaX2JBcMEaV5-FGQhq2";
     const WEBHOOK_RDV = "https://discord.com/api/webhooks/1489308538017943553/pTueMQW8xrLZd9FUdqczCgaoSDe8HEk495yRK41qbI3MIcqjiV9qaNArLmRCXEBTsd4d";
+
+    // Produits par défaut (seront chargés depuis Firestore)
+    let weaponsDB = {
+        "Armes blanches": [],
+        "Pistolets et revolvers": [],
+        "Mitraillettes": [],
+        "Fusils d'assaut": [],
+        "Fusils de chasse": []
+    };
 
     function showToast(message, type = 'success') {
         const toast = document.createElement('div');
@@ -1122,33 +1159,72 @@
     async function sendWebhook(webhookUrl, data) {
         try {
             const url = `${webhookUrl}?t=${Date.now()}`;
-            
             const response = await fetch(url, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data),
                 mode: 'cors'
             });
-            
-            if (!response.ok) {
-                const errorText = await response.text();
-                console.error('Erreur Discord:', errorText);
-                throw new Error(`HTTP ${response.status}: ${errorText}`);
-            }
-            
-            try {
-                const result = await response.json();
-                console.log('Webhook envoyé avec succès:', result);
-            } catch (jsonError) {
-                console.log('Webhook envoyé avec succès (réponse non-JSON)');
-            }
-            
             return true;
         } catch (error) {
-            console.error('Erreur détaillée:', error);
+            console.error('Erreur webhook:', error);
             return true;
+        }
+    }
+
+    // Charger les produits depuis Firestore
+    async function loadProducts() {
+        try {
+            const produitsRef = collection(db, "produits");
+            const snapshot = await getDocs(produitsRef);
+            
+            // Réinitialiser weaponsDB
+            for (let cat in weaponsDB) {
+                weaponsDB[cat] = [];
+            }
+            
+            snapshot.forEach(doc => {
+                const produit = { id: doc.id, ...doc.data() };
+                if (weaponsDB[produit.categorie]) {
+                    weaponsDB[produit.categorie].push(produit);
+                }
+            });
+            
+            render();
+            buildNav();
+        } catch (error) {
+            console.error("Erreur chargement produits:", error);
+            // Produits de secours si pas de connexion
+            weaponsDB = {
+                "Armes blanches": [
+                    { name: "Couteau à cran d'arrêt", price: 2500, prixAchat: 1500, desc: "Dissimulation facile, rapide à dégainer." },
+                    { name: "Machette", price: 4000, prixAchat: 2400, desc: "Lame redoutable pour le corps à corps." },
+                    { name: "Poing américain", price: 1800, prixAchat: 1000, desc: "Coup dévastateur dans la mêlée." },
+                    { name: "Katana", price: 12000, prixAchat: 7000, desc: "Lame légendaire, rapidité et précision." }
+                ],
+                "Pistolets et revolvers": [
+                    { name: "Pétoire", price: 5000, prixAchat: 3000, desc: "Ancienne mais fiable." },
+                    { name: "Beretta 9mm", price: 8500, prixAchat: 5000, desc: "Précision et cadence." },
+                    { name: "Pistolet Lourd", price: 12500, prixAchat: 7500, desc: "Puissance brute." },
+                    { name: "Desert Eagle", price: 22000, prixAchat: 13000, desc: "Le classique .50 AE." },
+                    { name: "Pistolet Vintage", price: 7500, prixAchat: 4500, desc: "Style rétro." }
+                ],
+                "Mitraillettes": [
+                    { name: "Pistolet mitrailleur", price: 15000, prixAchat: 9000, desc: "Rafale compacte." },
+                    { name: "Mitraillette", price: 18500, prixAchat: 11000, desc: "Cadence élevée." }
+                ],
+                "Fusils d'assaut": [
+                    { name: "Mousquet", price: 9000, prixAchat: 5400, desc: "Tir lent mais puissant." },
+                    { name: "Carabine", price: 21000, prixAchat: 12600, desc: "Précision moyenne/longue distance." },
+                    { name: "Fusil d'assaut Mk II", price: 35000, prixAchat: 21000, desc: "Le nec plus ultra." }
+                ],
+                "Fusils de chasse": [
+                    { name: "Fusil à pompe", price: 18000, prixAchat: 10800, desc: "Ravageur à courte portée." },
+                    { name: "Fusil à double canon", price: 16500, prixAchat: 9900, desc: "Deux tirs rapides." }
+                ]
+            };
+            render();
+            buildNav();
         }
     }
 
@@ -1161,8 +1237,8 @@
     }
 
     function getProductImageHTML(weapon) {
-        if (weapon.img && weapon.img !== "") {
-            return `<img src="${weapon.img}" alt="${weapon.name}" onerror="this.parentElement.classList.add('no-image'); this.style.display='none'; this.parentElement.innerHTML='<i class=\'fas fa-gun\'></i>'">`;
+        if (weapon.imageUrl) {
+            return `<img src="${weapon.imageUrl}" alt="${weapon.name}" onerror="this.parentElement.classList.add('no-image'); this.style.display='none'; this.parentElement.innerHTML='<i class=\'fas fa-gun\'></i>'">`;
         } else {
             return `<i class="fas fa-gun"></i>`;
         }
@@ -1187,14 +1263,14 @@
                 return; 
             }
             grid.innerHTML = filtered.map((w, idx) => `
-                <div class="product-card" data-name="${w.name}" style="animation-delay: ${0.03 * idx}s">
-                    <div class="product-img ${w.img ? '' : 'no-image'}">
+                <div class="product-card" data-name="${w.name}" data-id="${w.id || w.name}">
+                    <div class="product-img ${w.imageUrl ? '' : 'no-image'}">
                         ${getProductImageHTML(w)}
                     </div>
                     <div class="product-info">
                         <div class="product-name">${w.name}</div>
                         <div class="product-price">${w.price.toLocaleString()} $</div>
-                        <button class="add-to-cart" data-name="${w.name}" data-price="${w.price}"><i class="fas fa-plus"></i> Ajouter</button>
+                        <button class="add-to-cart" data-name="${w.name}" data-price="${w.price}" data-id="${w.id || w.name}"><i class="fas fa-plus"></i> Ajouter</button>
                     </div>
                 </div>
             `).join('');
@@ -1221,14 +1297,14 @@
             const grid = document.getElementById("featuredGrid");
             if(grid) {
                 grid.innerHTML = top6.map((w, idx) => `
-                    <div class="product-card" data-name="${w.name}" style="animation-delay: ${0.05 * idx}s">
-                        <div class="product-img ${w.img ? '' : 'no-image'}">
+                    <div class="product-card" data-name="${w.name}" data-id="${w.id || w.name}">
+                        <div class="product-img ${w.imageUrl ? '' : 'no-image'}">
                             ${getProductImageHTML(w)}
                         </div>
                         <div class="product-info">
                             <div class="product-name">${w.name}</div>
                             <div class="product-price">${w.price.toLocaleString()} $</div>
-                            <button class="add-to-cart" data-name="${w.name}" data-price="${w.price}"><i class="fas fa-plus"></i> Ajouter</button>
+                            <button class="add-to-cart" data-name="${w.name}" data-price="${w.price}" data-id="${w.id || w.name}"><i class="fas fa-plus"></i> Ajouter</button>
                         </div>
                     </div>
                 `).join('');
@@ -1254,14 +1330,14 @@
         const grid = document.getElementById("categoryGrid");
         if(filtered.length === 0) { grid.innerHTML = "<p style='text-align:center;'>Aucune arme trouvée.</p>"; return; }
         grid.innerHTML = filtered.map((w, idx) => `
-            <div class="product-card" data-name="${w.name}" style="animation-delay: ${0.03 * idx}s">
-                <div class="product-img ${w.img ? '' : 'no-image'}">
+            <div class="product-card" data-name="${w.name}" data-id="${w.id || w.name}">
+                <div class="product-img ${w.imageUrl ? '' : 'no-image'}">
                     ${getProductImageHTML(w)}
                 </div>
                 <div class="product-info">
                     <div class="product-name">${w.name}</div>
                     <div class="product-price">${w.price.toLocaleString()} $</div>
-                    <button class="add-to-cart" data-name="${w.name}" data-price="${w.price}"><i class="fas fa-plus"></i> Ajouter</button>
+                    <button class="add-to-cart" data-name="${w.name}" data-price="${w.price}" data-id="${w.id || w.name}"><i class="fas fa-plus"></i> Ajouter</button>
                 </div>
             </div>
         `).join('');
@@ -1273,7 +1349,12 @@
         document.querySelectorAll(".add-to-cart").forEach(btn => {
             btn.addEventListener("click", (e) => {
                 e.stopPropagation();
-                addToCart({ name: btn.dataset.name, price: parseInt(btn.dataset.price) });
+                if (!currentUser) {
+                    showToast("Veuillez vous connecter pour ajouter au panier", 'error');
+                    window.location.href = "login.html";
+                    return;
+                }
+                addToCart({ name: btn.dataset.name, price: parseInt(btn.dataset.price), id: btn.dataset.id });
                 showToast(`${btn.dataset.name} ajouté !`, 'success');
             });
         });
@@ -1292,13 +1373,23 @@
 
     function showModal(weapon) {
         document.getElementById("modalTitle").innerText = weapon.name;
-        document.getElementById("modalDesc").innerText = weapon.desc;
+        document.getElementById("modalDesc").innerText = weapon.desc || "Aucune description disponible";
         document.getElementById("modalPrice").innerHTML = `${weapon.price.toLocaleString()} $`;
         document.getElementById("descModal").style.display = "flex";
     }
 
-    function addToCart(item) { cart.push(item); updateCartUI(); }
-    function removeFromCart(idx) { cart.splice(idx, 1); updateCartUI(); }
+    function addToCart(item) { 
+        cart.push(item); 
+        updateCartUI();
+        // Sauvegarder le panier dans localStorage
+        localStorage.setItem(`cart_${currentUser.uid}`, JSON.stringify(cart));
+    }
+    
+    function removeFromCart(idx) { 
+        cart.splice(idx, 1); 
+        updateCartUI();
+        localStorage.setItem(`cart_${currentUser.uid}`, JSON.stringify(cart));
+    }
 
     function updateCartUI() {
         const cartDiv = document.getElementById("cartItemsList");
@@ -1315,15 +1406,12 @@
     }
 
     async function sendOrder() {
-        const nom = document.getElementById("rpNom")?.value.trim();
-        const prenom = document.getElementById("rpPrenom")?.value.trim();
-        const birth = document.getElementById("rpBirth")?.value;
-        const phone = document.getElementById("rpPhone")?.value.trim();
-        
-        if(!nom || !prenom || !phone) {
-            showToast("Remplissez Nom, Prénom et Téléphone", 'error');
+        if(!currentUser) {
+            showToast("Veuillez vous connecter", 'error');
+            window.location.href = "login.html";
             return;
         }
+        
         if(cart.length === 0) {
             showToast("Panier vide", 'error');
             return;
@@ -1334,38 +1422,66 @@
         validateBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Envoi...';
         validateBtn.disabled = true;
         
-        const orderLines = cart.map(i => `${i.name} - ${i.price.toLocaleString()} $`);
-        const total = cart.reduce((s,i)=>s+i.price,0);
+        // Récupérer les infos utilisateur depuis Firestore
+        const userDoc = await getDoc(doc(db, "utilisateurs", currentUser.uid));
+        const userData = userDoc.data();
         
+        const orderLines = cart.map(i => `${i.name} - ${i.price.toLocaleString()} $`);
+        const totalVente = cart.reduce((s,i)=>s+i.price,0);
+        
+        // Calculer le prix d'achat total
+        let totalAchat = 0;
+        for (const item of cart) {
+            // Chercher le produit dans weaponsDB
+            for (let cat in weaponsDB) {
+                const produit = weaponsDB[cat].find(p => p.name === item.name);
+                if (produit && produit.prixAchat) {
+                    totalAchat += produit.prixAchat;
+                    break;
+                }
+            }
+        }
+        
+        const benefice = totalVente - totalAchat;
+        
+        // Créer la commande dans Firestore
+        const commandeData = {
+            uidClient: currentUser.uid,
+            clientNom: `${userData.prenom || ''} ${userData.nom || ''}`.trim() || currentUser.email,
+            clientEmail: currentUser.email,
+            dateCommande: new Date().toISOString(),
+            statut: "en_attente",
+            produits: cart.map(i => ({ nom: i.name, prix: i.price })),
+            totalVente: totalVente,
+            totalAchat: totalAchat,
+            benefice: benefice,
+            uidValideur: null,
+            dateValidation: null
+        };
+        
+        await addDoc(collection(db, "commandes"), commandeData);
+        
+        // Envoyer à Discord
         const embed = { 
             title: "🔫 NOUVELLE COMMANDE", 
             color: 0x1e3a8a,
             timestamp: new Date().toISOString(),
             fields: [
-                { name: "👤 Client", value: `${prenom} ${nom}`, inline: true },
-                { name: "📅 Naissance", value: birth || "Non renseignée", inline: true },
-                { name: "📞 Téléphone", value: phone, inline: true },
+                { name: "👤 Client", value: commandeData.clientNom, inline: true },
+                { name: "📧 Email", value: currentUser.email, inline: true },
                 { name: "📦 Articles", value: orderLines.join("\n") || "Aucun", inline: false },
-                { name: "💰 Total", value: `${total.toLocaleString()} $`, inline: true }
+                { name: "💰 Total", value: `${totalVente.toLocaleString()} $`, inline: true }
             ],
             footer: { text: "Armurerie Légale" }
         };
         
-        const success = await sendWebhook(WEBHOOK_COMMANDES, { 
-            embeds: [embed], 
-            content: "@everyone 🛒 Nouvelle commande !"
-        });
+        await sendWebhook(WEBHOOK_COMMANDES, { embeds: [embed], content: "@everyone 🛒 Nouvelle commande !" });
         
-        if(success) {
-            showToast("✅ Commande envoyée !", 'success');
-            cart = []; 
-            updateCartUI(); 
-            closeCart();
-            document.getElementById("rpNom").value = "";
-            document.getElementById("rpPrenom").value = "";
-            document.getElementById("rpBirth").value = "";
-            document.getElementById("rpPhone").value = "";
-        }
+        showToast("✅ Commande envoyée !", 'success');
+        cart = []; 
+        updateCartUI(); 
+        closeCart();
+        localStorage.removeItem(`cart_${currentUser.uid}`);
         
         validateBtn.innerHTML = originalText;
         validateBtn.disabled = false;
@@ -1384,14 +1500,8 @@
             footer: { text: "Armurerie Légale" }
         };
         
-        const success = await sendWebhook(WEBHOOK_RDV, { 
-            embeds: [embed], 
-            content: "@here 📅 Nouveau RDV !"
-        });
-        
-        if(success) {
-            showToast("RDV envoyé !", 'success');
-        }
+        await sendWebhook(WEBHOOK_RDV, { embeds: [embed], content: "@here 📅 Nouveau RDV !" });
+        showToast("RDV envoyé !", 'success');
     }
 
     function showContactModal() {
@@ -1461,12 +1571,89 @@
         document.getElementById("overlay").style.display = "block";
         document.body.style.overflow = "hidden";
     }
+    
     function closeCart() { 
         document.getElementById("cartSidebar").classList.remove("open"); 
         document.getElementById("overlay").style.display = "none";
         document.body.style.overflow = "auto";
     }
 
+    // Gestion de l'affichage du compte
+    function updateAccountUI() {
+        const accountSection = document.getElementById("accountSection");
+        if (!accountSection) return;
+        
+        if (currentUser) {
+            // Récupérer le rôle
+            const userRef = doc(db, "utilisateurs", currentUser.uid);
+            getDoc(userRef).then(docSnap => {
+                if (docSnap.exists()) {
+                    currentUserRole = docSnap.data().role || "visiteur";
+                }
+                const roleBadge = currentUserRole !== "visiteur" ? `<span class="admin-badge">${currentUserRole.toUpperCase()}</span>` : "";
+                accountSection.innerHTML = `
+                    <div class="user-info">
+                        <i class="fas fa-user-circle"></i>
+                        <span class="user-name">${currentUser.email.split('@')[0]}${roleBadge}</span>
+                        <button class="logout-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i></button>
+                    </div>
+                `;
+                document.getElementById("logoutBtn")?.addEventListener("click", async () => {
+                    await signOut(auth);
+                    window.location.href = "index.html";
+                });
+            }).catch(() => {
+                accountSection.innerHTML = `
+                    <a href="login.html" class="account-btn">
+                        <i class="fas fa-user"></i> Connexion
+                    </a>
+                `;
+            });
+        } else {
+            accountSection.innerHTML = `
+                <a href="login.html" class="account-btn">
+                    <i class="fas fa-user"></i> Connexion
+                </a>
+            `;
+        }
+    }
+
+    // Charger le panier sauvegardé
+    function loadCart() {
+        if (currentUser) {
+            const savedCart = localStorage.getItem(`cart_${currentUser.uid}`);
+            if (savedCart) {
+                cart = JSON.parse(savedCart);
+                updateCartUI();
+            }
+        }
+    }
+
+    // Écouter les changements d'état de connexion
+    onAuthStateChanged(auth, (user) => {
+        currentUser = user;
+        updateAccountUI();
+        if (user) {
+            loadCart();
+            // Vérifier si l'utilisateur existe en base
+            const userRef = doc(db, "utilisateurs", user.uid);
+            getDoc(userRef).then(docSnap => {
+                if (!docSnap.exists()) {
+                    // Créer l'utilisateur avec rôle visiteur par défaut
+                    setDoc(userRef, {
+                        email: user.email,
+                        role: "visiteur",
+                        dateInscription: new Date().toISOString()
+                    });
+                }
+            });
+        } else {
+            cart = [];
+            updateCartUI();
+        }
+    });
+
+    // Event listeners
     document.getElementById("searchInput")?.addEventListener("input", (e) => { 
         searchFilter = e.target.value; 
         currentCategory = null;
@@ -1491,6 +1678,8 @@
         }
     };
 
+    // Initialisation
+    loadProducts();
     buildNav();
     currentCategory = null;
     render();
