@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Inscription | AMMU★NATION</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #1e3a8a 0%, #e31b23 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .register-container {
+            background: white;
+            border-radius: 32px;
+            padding: 2.5rem;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .logo h1 {
+            font-family: 'Orbitron', monospace;
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #e31b23, #1e3a8a);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .logo p {
+            color: #6b7280;
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+        }
+
+        .title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #1e3a8a;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        .subtitle {
+            color: #6b7280;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #e31b23;
+            box-shadow: 0 0 0 4px rgba(227, 27, 35, 0.1);
+        }
+
+        .row-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .btn-register {
+            width: 100%;
+            background: linear-gradient(135deg, #1e3a8a, #152e6e);
+            color: white;
+            padding: 14px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 1rem;
+        }
+
+        .btn-register:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(30, 58, 138, 0.3);
+            background: linear-gradient(135deg, #e31b23, #b01018);
+        }
+
+        .login-link {
+            text-align: center;
+            color: #6b7280;
+        }
+
+        .login-link a {
+            color: #e31b23;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+
+        .back-home {
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+
+        .back-home a {
+            color: #1e3a8a;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .back-home a:hover {
+            text-decoration: underline;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #00c853;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 12px;
+            font-weight: 600;
+            z-index: 1000;
+            animation: fadeInUp 0.3s ease-out;
+        }
+
+        .toast.error {
+            background: #e31b23;
+        }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <div class="logo">
+            <h1>AMMU★NATION</h1>
+            <p>Armurerie · Los Santos</p>
+        </div>
+        <div class="title">Inscription</div>
+        <div class="subtitle">Créez votre compte armurerie</div>
+
+        <div class="row-2">
+            <div class="input-group">
+                <label><i class="fas fa-user"></i> Nom</label>
+                <input type="text" id="nom" placeholder="Votre nom">
+            </div>
+            <div class="input-group">
+                <label><i class="fas fa-user"></i> Prénom</label>
+                <input type="text" id="prenom" placeholder="Votre prénom">
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label><i class="fas fa-envelope"></i> Email</label>
+            <input type="email" id="email" placeholder="votre@email.com">
+        </div>
+
+        <div class="input-group">
+            <label><i class="fas fa-phone"></i> Téléphone</label>
+            <input type="tel" id="phone" placeholder="Votre numéro">
+        </div>
+
+        <div class="input-group">
+            <label><i class="fas fa-calendar"></i> Date de naissance</label>
+            <input type="date" id="birth">
+        </div>
+
+        <div class="input-group">
+            <label><i class="fas fa-lock"></i> Mot de passe</label>
+            <input type="password" id="password" placeholder="••••••••">
+        </div>
+
+        <div class="input-group">
+            <label><i class="fas fa-lock"></i> Confirmer le mot de passe</label>
+            <input type="password" id="confirmPassword" placeholder="••••••••">
+        </div>
+
+        <button class="btn-register" id="registerBtn"><i class="fas fa-user-plus"></i> S'inscrire</button>
+
+        <div class="login-link">
+            Déjà un compte ? <a href="login.html">Se connecter</a>
+        </div>
+
+        <div class="back-home">
+            <a href="index.html"><i class="fas fa-arrow-left"></i> Retour à l'accueil</a>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "VOTRE_API_KEY",
+            authDomain: "VOTRE_PROJECT.firebaseapp.com",
+            projectId: "VOTRE_PROJECT_ID",
+            storageBucket: "VOTRE_PROJECT.appspot.com",
+            messagingSenderId: "VOTRE_SENDER_ID",
+            appId: "VOTRE_APP_ID"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i> ${message}`;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 4000);
+        }
+
+        document.getElementById("registerBtn").addEventListener("click", async () => {
+            const nom = document.getElementById("nom").value.trim();
+            const prenom = document.getElementById("prenom").value.trim();
+            const email = document.getElementById("email").value.trim();
+            const phone = document.getElementById("phone").value.trim();
+            const birth = document.getElementById("birth").value;
+            const password = document.getElementById("password").value;
+            const confirmPassword = document.getElementById("confirmPassword").value;
+
+            if (!nom || !prenom || !email || !phone || !password) {
+                showToast("Veuillez remplir tous les champs obligatoires", 'error');
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                showToast("Les mots de passe ne correspondent pas", 'error');
+                return;
+            }
+
+            if (password.length < 6) {
+                showToast("Le mot de passe doit contenir au moins 6 caractères", 'error');
+                return;
+            }
+
+            try {
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+
+                // Créer le profil utilisateur dans Firestore
+                await setDoc(doc(db, "utilisateurs", user.uid), {
+                    nom: nom,
+                    prenom: prenom,
+                    email: email,
+                    phone: phone,
+                    birth: birth || null,
+                    role: "visiteur",
+                    dateInscription: new Date().toISOString(),
+                    uid: user.uid
+                });
+
+                showToast("Inscription réussie !", 'success');
+                setTimeout(() => { window.location.href = "index.html"; }, 1500);
+            } catch (error) {
+                console.error(error);
+                if (error.code === 'auth/email-already-in-use') {
+                    showToast("Cet email est déjà utilisé", 'error');
+                } else {
+                    showToast("Erreur lors de l'inscription", 'error');
+                }
+            }
+        });
+    </script>
+</body>
+</html>
