@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Mon compte | AMMU★NATION</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #f8fafc 0%, #eff3f8 100%); }
+        
+        .header {
+            background: rgba(255,255,255,0.98); backdrop-filter: blur(10px);
+            padding: 1rem 2rem; position: sticky; top: 0; z-index: 100;
+            border-bottom: 1px solid rgba(227,27,35,0.15);
+            display: flex; justify-content: space-between; align-items: center;
+            flex-wrap: wrap; gap: 1rem;
+        }
+        .logo h1 {
+            font-family: 'Orbitron', monospace; font-size: 1.5rem;
+            background: linear-gradient(135deg, #e31b23, #1e3a8a);
+            -webkit-background-clip: text; background-clip: text; color: transparent;
+        }
+        .logo p { font-size: 0.7rem; color: #6b7280; }
+        
+        .main-content { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+        
+        .profile-card {
+            background: white; border-radius: 24px; padding: 2rem;
+            margin-bottom: 2rem; box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            display: flex; justify-content: space-between; align-items: center;
+            flex-wrap: wrap; gap: 1rem;
+        }
+        .profile-info h2 { color: #1e3a8a; margin-bottom: 0.5rem; }
+        .profile-info p { color: #6b7280; margin: 5px 0; }
+        .role-badge {
+            display: inline-block; padding: 4px 12px; border-radius: 50px;
+            font-size: 0.75rem; font-weight: 600;
+        }
+        .role-visiteur { background: #6c757d; color: white; }
+        .role-employe { background: #2196f3; color: white; }
+        .role-manager { background: #ff9800; color: white; }
+        .role-copatron { background: #9c27b0; color: white; }
+        .role-admin { background: #e31b23; color: white; }
+        
+        .stats-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem; margin-bottom: 2rem;
+        }
+        .stat-card {
+            background: white; padding: 1.5rem; border-radius: 20px;
+            text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .stat-card .value { font-size: 2rem; font-weight: 800; color: #e31b23; }
+        
+        .commands-table {
+            background: white; border-radius: 20px; overflow-x: auto;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        table { width: 100%; border-collapse: collapse; min-width: 600px; }
+        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #eef2f8; }
+        th { background: #f8fafc; color: #1e3a8a; }
+        
+        .status {
+            display: inline-block; padding: 4px 12px; border-radius: 50px;
+            font-size: 0.8rem; font-weight: 600;
+        }
+        .status.en_attente { background: #fff3cd; color: #856404; }
+        .status.termine { background: #d4edda; color: #155724; }
+        
+        .btn-home {
+            background: #1e3a8a; color: white; border: none; padding: 10px 20px;
+            border-radius: 50px; cursor: pointer; text-decoration: none;
+            display: inline-flex; align-items: center; gap: 8px;
+        }
+        .btn-home:hover { background: #e31b23; }
+        
+        .logout-btn {
+            background: #e31b23; color: white; border: none; padding: 10px 20px;
+            border-radius: 50px; cursor: pointer;
+        }
+        
+        .toast {
+            position: fixed; bottom: 20px; right: 20px; background: #00c853;
+            color: white; padding: 12px 20px; border-radius: 12px; z-index: 300;
+        }
+        
+        @media (max-width: 768px) {
+            .header { flex-direction: column; text-align: center; }
+            .main-content { padding: 1rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo" onclick="window.location.href='index.html'" style="cursor:pointer;">
+            <h1>AMMU★NATION</h1>
+            <p>Armurerie · Los Santos</p>
+        </div>
+        <div style="display: flex; gap: 1rem;">
+            <a href="index.html" class="btn-home"><i class="fas fa-home"></i> Accueil</a>
+            <button class="logout-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Déconnexion</button>
+        </div>
+    </div>
+    
+    <div class="main-content">
+        <div class="profile-card" id="profileCard">
+            <div class="profile-info">
+                <h2><i class="fas fa-user-circle"></i> Mon compte</h2>
+                <p><strong>Email:</strong> <span id="userEmail">Chargement...</span></p>
+                <p><strong>Nom complet:</strong> <span id="userFullName">Chargement...</span></p>
+                <p><strong>Téléphone:</strong> <span id="userPhone">Chargement...</span></p>
+                <p><strong>Inscrit le:</strong> <span id="userDate">Chargement...</span></p>
+            </div>
+            <div>
+                <span class="role-badge" id="userRole">Chargement...</span>
+            </div>
+        </div>
+        
+        <div class="stats-grid">
+            <div class="stat-card"><div class="value" id="totalSpent">0 $</div><div class="label">Total dépensé</div></div>
+            <div class="stat-card"><div class="value" id="orderCount">0</div><div class="label">Commandes passées</div></div>
+            <div class="stat-card"><div class="value" id="pendingCount">0</div><div class="label">En attente</div></div>
+            <div class="stat-card"><div class="value" id="completedCount">0</div><div class="label">Terminées</div></div>
+        </div>
+        
+        <h3 style="margin-bottom: 1rem; color: #1e3a8a;"><i class="fas fa-history"></i> Historique des commandes</h3>
+        <div class="commands-table">
+            <table>
+                <thead>
+                    <tr><th>Référence</th><th>Date</th><th>Articles</th><th>Total</th><th>Statut</th><th>Validé par</th></tr>
+                </thead>
+                <tbody id="commandsTableBody">
+                    <tr><td colspan="6" style="text-align:center;">Chargement...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, collection, getDocs, query, where, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        
+        const firebaseConfig = {
+            apiKey: "VOTRE_API_KEY",
+            authDomain: "VOTRE_PROJECT.firebaseapp.com",
+            projectId: "VOTRE_PROJECT_ID",
+            storageBucket: "VOTRE_PROJECT.appspot.com",
+            messagingSenderId: "VOTRE_SENDER_ID",
+            appId: "VOTRE_APP_ID"
+        };
+        
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = message;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+        
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                window.location.href = "login.html";
+                return;
+            }
+            
+            // Charger les infos utilisateur
+            const userDoc = await getDoc(doc(db, "utilisateurs", user.uid));
+            if (!userDoc.exists()) {
+                window.location.href = "login.html";
+                return;
+            }
+            
+            const userData = userDoc.data();
+            document.getElementById("userEmail").innerText = user.email;
+            document.getElementById("userFullName").innerText = `${userData.prenom || ''} ${userData.nom || ''}`.trim() || "Non renseigné";
+            document.getElementById("userPhone").innerText = userData.phone || "Non renseigné";
+            document.getElementById("userDate").innerText = userData.dateInscription ? new Date(userData.dateInscription).toLocaleDateString('fr-FR') : "Non renseignée";
+            
+            const roleBadge = document.getElementById("userRole");
+            roleBadge.innerText = (userData.role || "visiteur").toUpperCase();
+            roleBadge.className = `role-badge role-${userData.role || "visiteur"}`;
+            
+            // Charger les commandes de l'utilisateur
+            const commandsRef = collection(db, "commandes");
+            const q = query(commandsRef, where("uidClient", "==", user.uid));
+            const snapshot = await getDocs(q);
+            const commands = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            
+            // Statistiques
+            const totalSpent = commands.reduce((sum, cmd) => sum + (cmd.totalVente || 0), 0);
+            const orderCount = commands.length;
+            const pendingCount = commands.filter(cmd => cmd.statut === "en_attente").length;
+            const completedCount = commands.filter(cmd => cmd.statut === "termine").length;
+            
+            document.getElementById("totalSpent").innerText = totalSpent.toLocaleString() + " $";
+            document.getElementById("orderCount").innerText = orderCount;
+            document.getElementById("pendingCount").innerText = pendingCount;
+            document.getElementById("completedCount").innerText = completedCount;
+            
+            // Afficher les commandes
+            const tbody = document.getElementById("commandsTableBody");
+            if (commands.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Aucune commande passée</td></tr>';
+                return;
+            }
+            
+            commands.sort((a, b) => new Date(b.dateCommande) - new Date(a.dateCommande));
+            tbody.innerHTML = commands.map(cmd => `
+                <tr>
+                    <td>#${cmd.id.slice(0, 8)}</td>
+                    <td>${new Date(cmd.dateCommande).toLocaleDateString('fr-FR')}</td>
+                    <td>${cmd.produits?.length || 0} article(s)</td>
+                    <td>${(cmd.totalVente || 0).toLocaleString()} $</td>
+                    <td><span class="status ${cmd.statut}">${cmd.statut === "en_attente" ? "En attente" : "Terminé"}</span></td>
+                    <td>${cmd.valideurNom || "-"}</td>
+                </tr>
+            `).join('');
+        });
+        
+        document.getElementById("logoutBtn").addEventListener("click", async () => {
+            await signOut(auth);
+            window.location.href = "index.html";
+        });
+    </script>
+</body>
+</html>
